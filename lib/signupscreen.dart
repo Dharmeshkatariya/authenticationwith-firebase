@@ -12,13 +12,10 @@ class SignUpScreen extends StatefulWidget {
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-
-
 class _SignUpScreenState extends State<SignUpScreen> {
-
   final _formSignUp = GlobalKey<FormState>();
   final _nameController = TextEditingController();
-  final _numerController = TextEditingController();
+  final _mobileController = TextEditingController();
   final _passController = TextEditingController();
   final _emailController = TextEditingController();
   bool isChecked = false;
@@ -80,7 +77,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                       ),
                       Common.textField(
-                        controller: _numerController,
+                        controller: _mobileController,
                         fillColor: Colors.deepPurple,
                         text: "Phone",
                         prefixIcon: const Icon(
@@ -132,7 +129,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               _createUser();
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => const LoginScreen()),
+                                MaterialPageRoute(
+                                    builder: (context) => const LoginScreen()),
                               );
                             }
                           }),
@@ -148,10 +146,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   _createUser() async {
-
     try {
       final credential =
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: _emailController.text,
         password: _passController.text,
       );
@@ -160,7 +157,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
       shareP.setString("pass", _passController.text);
 
       print(credential.user);
-
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         print('The password provided is too weak.');
@@ -171,5 +167,4 @@ class _SignUpScreenState extends State<SignUpScreen> {
       print(e);
     }
   }
-
 }

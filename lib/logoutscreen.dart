@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,6 +13,9 @@ class LogoutScreen extends StatefulWidget {
 }
 
 class _LogoutScreenState extends State<LogoutScreen> {
+
+  var email = "";
+  var pass = "";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,14 +46,22 @@ class _LogoutScreenState extends State<LogoutScreen> {
 
     await FirebaseAuth.instance.signOut();
     var shareP = await SharedPreferences.getInstance();
-    try {
-      await FirebaseAuth.instance.currentUser!.delete();
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'requires-recent-login') {
-        print('The user must reauthenticate before this operation can be executed.');
-      }
-    }
- 
      shareP.remove("login");
+     email = shareP.getString("email")!;
+     pass = shareP.getString("pass")!;
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      user?.delete();
+      AuthCredential credentials = EmailAuthProvider.credential(email: email, password: pass);
+      print(user);
+    var result = await user!.reauthenticateWithCredential(credentials);
+    await DatabaseEventType.childAdded;
+      await result.user!.delete();
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
   }
-}
+  }
+

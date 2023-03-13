@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled5/common.dart';
+import 'package:untitled5/signuppage.dart';
 import 'package:untitled5/signupscreen.dart';
 
 import 'logoutscreen.dart';
@@ -49,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       const Text(
                         "Login",
                         style: TextStyle(
-                            fontSize: 23,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: Colors.white),
                       ),
@@ -92,13 +93,14 @@ class _LoginScreenState extends State<LoginScreen> {
                             }
                           }),
                       GestureDetector(
-                          onTap: () {
-                            _resetPass();
-                          },
-                          child: const Text(
-                            "Forget your password?",
-                            style: TextStyle(color: Colors.white),
-                          )),
+                        onTap: () {
+                          _resetPass();
+                        },
+                        child: const Text(
+                          "Forget your password?",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -112,7 +114,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          const SignUpScreen()),
+                                          const SignPage()),
                                 );
                               },
                               child: const Text(
@@ -136,7 +138,8 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   _resetPass() async {
-    await FirebaseAuth.instance.sendPasswordResetEmail(email: _emailController.text);
+    await FirebaseAuth.instance
+        .sendPasswordResetEmail(email: _emailController.text);
   }
 
   _userLogin() async {
@@ -158,13 +161,9 @@ class _LoginScreenState extends State<LoginScreen> {
         context,
         MaterialPageRoute(builder: (context) => const LogoutScreen()),
       );
-      print(credential.user);
-      print('User login successfully!');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        print('No user found for that email.');
       } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
       }
     }
   }
