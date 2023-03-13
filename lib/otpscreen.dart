@@ -12,7 +12,6 @@ class OtpScreen extends StatefulWidget {
 }
 
 class _OtpScreenState extends State<OtpScreen> {
-
   final _otpController = TextEditingController();
   var receivedID = "";
 
@@ -35,28 +34,41 @@ class _OtpScreenState extends State<OtpScreen> {
                   color: Colors.black87),
             ),
             const Text("Otp has been sent your mobile number"),
-          const SizedBox(height: 20,),
-          Common.textField(text: "",fillColor: Colors.blue.shade300),
-            const SizedBox(height: 20,),
-            Common.container(text: "Verify now",onTap: (){
-              _verifyOTPCode();
-            }),
+            const SizedBox(
+              height: 20,
+            ),
+            Common.textField(text: "", fillColor: Colors.blue.shade300),
+            const SizedBox(
+              height: 20,
+            ),
+            Common.container(
+                text: "Verify now",
+                onTap: () {
+                  _verifyOTPCode();
+                }),
           ],
         ),
       ),
     ));
   }
-   _verifyOTPCode() async {
+
+  _verifyOTPCode() async {
     FirebaseAuth auth = FirebaseAuth.instance;
     var shareP = await SharedPreferences.getInstance();
-    receivedID = shareP.getString("receive")!;
-    var _credential = PhoneAuthProvider.credential(verificationId: receivedID, smsCode: _otpController.text);
 
-    await auth.signInWithCredential(_credential).then((value) =>
-        print('User Login In Successful'));
+    receivedID = shareP.getString("receive")!;
+    var credential = PhoneAuthProvider.credential(
+        verificationId: receivedID, smsCode: _otpController.text);
+
+    await auth
+        .signInWithCredential(credential)
+        .then((value) => print('User Login In Successful'));
+
+    shareP.setBool("login", true);
+
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const LogoutScreen()),
+      MaterialPageRoute(builder: (context) =>  LogoutScreen()),
     );
   }
 }

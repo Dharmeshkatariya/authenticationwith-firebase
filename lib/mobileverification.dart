@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled5/common.dart';
 
-import 'loginscreen.dart';
 import 'otpscreen.dart';
 
 class MobileScreen extends StatefulWidget {
@@ -19,6 +18,7 @@ class _MobileScreenState extends State<MobileScreen> {
   final _mobileController = TextEditingController();
   final _passController = TextEditingController();
   final _form = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,30 +61,28 @@ class _MobileScreenState extends State<MobileScreen> {
       ),
     );
   }
+
   _mobileVerified() async {
     FirebaseAuth auth = FirebaseAuth.instance;
     auth.verifyPhoneNumber(
       phoneNumber: "+916354464371",
-      verificationCompleted: (PhoneAuthCredential credential)async{
-        await auth.signInWithCredential(credential).then(
-                (value) => print('Logged In Successfully')
-        );
+      verificationCompleted: (PhoneAuthCredential credential) async {
+        await auth
+            .signInWithCredential(credential)
+            .then((value) => print('Logged In Successfully'));
       },
       verificationFailed: (FirebaseAuthException e) {
         print(e.message);
       },
       codeSent: (String verificationId, int? resendToken) async {
-       var  receivedID = verificationId;
+        var receivedID = verificationId;
         setState(() {});
         var shareP = await SharedPreferences.getInstance();
-        shareP.setString("receive",receivedID);
+        shareP.setString("receive", receivedID);
 
         print("$resendToken");
       },
-
-
       codeAutoRetrievalTimeout: (String verificationId) {
-
         print('TimeOut');
       },
     );

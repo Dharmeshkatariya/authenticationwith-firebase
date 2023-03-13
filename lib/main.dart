@@ -10,19 +10,15 @@ import 'package:untitled5/logoutscreen.dart';
 import 'loginscreen.dart';
 
 Future<void> main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(
-
-  );
+  await Firebase.initializeApp();
 
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
 
   @override
   Widget build(BuildContext context) {
@@ -58,11 +54,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   _initFirebase() async {
-    
     final fcmToken = await FirebaseMessaging.instance.getToken();
     print('Device Token : $fcmToken');
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
   _login() async {
     var shareP = await SharedPreferences.getInstance();
     bool isLogin = shareP.getBool("login") ?? false;
-    Timer(Duration(seconds: 4), () {
+    Timer(Duration(seconds: 12), () {
       if (isLogin) {
         Navigator.pushReplacement(
           context,
