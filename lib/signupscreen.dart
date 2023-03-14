@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,6 +19,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _mobileController = TextEditingController();
   final _passController = TextEditingController();
   final _emailController = TextEditingController();
+  final databaseRef = FirebaseDatabase.instance.ref("Post");
+
   bool isChecked = false;
 
   @override
@@ -127,11 +130,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           onTap: () {
                             if (_formSignUp.currentState!.validate()) {
                               _createUser();
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const LoginScreen()),
-                              );
+                             _databaseProfile();
+
                             }
                           }),
                     ],
@@ -155,7 +155,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
       var shareP = await SharedPreferences.getInstance();
       shareP.setString("email", _emailController.text);
       shareP.setString("pass", _passController.text);
-
       print(credential.user);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -165,6 +164,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
       }
     } catch (e) {
       print(e);
+    }
+  }
+  _databaseProfile() {
+
+    if (_nameController.text.isNotEmpty &&
+        _emailController.text.isNotEmpty &&
+        _mobileController.text.isNotEmpty &&
+        _passController.text.isNotEmpty) {
+      databaseRef.child("Profile").set({
+        "fullName": _nameController.text,
+        "email": _emailController.text,
+        "Mobile": _mobileController.text,
+        "password": _passController.text,
+      });
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => const LoginScreen()),
+      );
     }
   }
 }

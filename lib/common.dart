@@ -1,10 +1,12 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Common {
-
   static String verificationId = '';
-  static Widget container({String? text, GestureTapCallback? onTap}) {
+
+  static Widget container({String? text, GestureTapCallback? onTap,
+  }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -24,7 +26,7 @@ class Common {
   }
 
   static Widget textField({
-    required String text,
+    String? text,
     Widget? prefixIcon,
     Widget? suffixIcon,
     TextEditingController? controller,
@@ -56,4 +58,62 @@ class Common {
       ),
     );
   }
+
+  static Widget custumtextfield({
+    String? text,
+    Widget? prefixIcon,
+    Widget? suffixIcon,
+    TextEditingController? controller,
+    dynamic validator,
+    Color? fillColor,
+    Color? color,
+    Color? hintcolor,
+  }) {
+    return TextFormField(
+      controller: controller,
+      validator: validator,
+      style:  TextStyle(color: color),
+      decoration: InputDecoration(
+        hintText: text,
+        labelText: text,
+        labelStyle: const TextStyle(color: Colors.black87),
+        filled: true,
+        hintStyle:  TextStyle(color: hintcolor),
+        fillColor: fillColor,
+        focusColor: Colors.red,
+        prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon,
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.black,width: 0.7),
+          borderRadius: BorderRadius.circular(18.0),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(13),
+        ),
+      ),
+    );
+  }
+
+  static Widget updateButton({String? text, GestureTapCallback? onTap,
+    Color? color,
+    Color? textcolor,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: Text(
+          text!,
+          style: TextStyle(
+              fontWeight: FontWeight.w600, color: textcolor, fontSize: 18),
+        ),
+      ),
+    );
+  }
+
 }
