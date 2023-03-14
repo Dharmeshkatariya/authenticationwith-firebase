@@ -47,11 +47,7 @@ class _MobileScreenState extends State<MobileScreen> {
                     onTap: () {
                       if (_form.currentState!.validate()) {
                         _mobileVerified();
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const OtpScreen()),
-                        );
+
                       }
                     }),
               ],
@@ -65,22 +61,26 @@ class _MobileScreenState extends State<MobileScreen> {
   _mobileVerified() async {
     FirebaseAuth auth = FirebaseAuth.instance;
     auth.verifyPhoneNumber(
-      phoneNumber: "+916354464371",
-      verificationCompleted: (PhoneAuthCredential credential) async {
-        await auth
-            .signInWithCredential(credential)
-            .then((value) => print('Logged In Successfully'));
-      },
+      phoneNumber: "+91 ${_mobileController.text}",
+
       verificationFailed: (FirebaseAuthException e) {
         print(e.message);
       },
+      verificationCompleted: (PhoneAuthCredential credential) async {
+        // await auth
+        //     .signInWithCredential(credential)
+        //     .then((value) => print('Logged In Successfully'));
+      },
       codeSent: (String verificationId, int? resendToken) async {
+        Common.verificationId = verificationId;
         var receivedID = verificationId;
-        setState(() {});
         var shareP = await SharedPreferences.getInstance();
         shareP.setString("receive", receivedID);
-
-        print("$resendToken");
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const OtpScreen()),
+        );
       },
       codeAutoRetrievalTimeout: (String verificationId) {
         print('TimeOut');

@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Common {
+
+  static String verificationId = '';
   static Widget container({String? text, GestureTapCallback? onTap}) {
     return GestureDetector(
       onTap: onTap,
