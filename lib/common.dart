@@ -1,11 +1,11 @@
-import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Common {
   static String verificationId = '';
 
-  static Widget container({String? text, GestureTapCallback? onTap,
+  static Widget container({
+    String? text,
+    GestureTapCallback? onTap,
   }) {
     return GestureDetector(
       onTap: onTap,
@@ -25,40 +25,6 @@ class Common {
     );
   }
 
-  static Widget textField({
-    String? text,
-    Widget? prefixIcon,
-    Widget? suffixIcon,
-    TextEditingController? controller,
-    dynamic validator,
-    Color? fillColor,
-  }) {
-    return TextFormField(
-      keyboardType: TextInputType.emailAddress,
-      validator: validator,
-      controller: controller,
-      style: const TextStyle(color: Colors.white),
-      decoration: InputDecoration(
-        hintText: text,
-        labelText: text,
-        labelStyle: const TextStyle(color: Colors.white),
-        filled: true,
-        hintStyle: const TextStyle(color: Colors.white),
-        fillColor: fillColor,
-        focusColor: Colors.red,
-        prefixIcon: prefixIcon,
-        suffixIcon: suffixIcon,
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.white, width: 2.0),
-          borderRadius: BorderRadius.circular(25.0),
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(17),
-        ),
-      ),
-    );
-  }
-
   static Widget custumtextfield({
     String? text,
     Widget? prefixIcon,
@@ -68,23 +34,27 @@ class Common {
     Color? fillColor,
     Color? color,
     Color? hintcolor,
+    int? maxline,
+
+    required Color bordercolor,
   }) {
     return TextFormField(
       controller: controller,
       validator: validator,
-      style:  TextStyle(color: color),
+maxLines: maxline,
+      style: TextStyle(color: color),
       decoration: InputDecoration(
         hintText: text,
         labelText: text,
-        labelStyle: const TextStyle(color: Colors.black87),
+        labelStyle: TextStyle(color: hintcolor),
         filled: true,
-        hintStyle:  TextStyle(color: hintcolor),
+        hintStyle: TextStyle(color: hintcolor),
         fillColor: fillColor,
         focusColor: Colors.red,
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
         enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.black,width: 0.7),
+          borderSide: BorderSide(color: bordercolor, width: 0.7),
           borderRadius: BorderRadius.circular(18.0),
         ),
         border: OutlineInputBorder(
@@ -94,7 +64,9 @@ class Common {
     );
   }
 
-  static Widget updateButton({String? text, GestureTapCallback? onTap,
+  static Widget updateButton({
+    String? text,
+    GestureTapCallback? onTap,
     Color? color,
     Color? textcolor,
   }) {
@@ -115,5 +87,4 @@ class Common {
       ),
     );
   }
-
 }

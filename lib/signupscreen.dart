@@ -20,7 +20,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _passController = TextEditingController();
   final _emailController = TextEditingController();
   final databaseRef = FirebaseDatabase.instance.ref("Post");
-
   bool isChecked = false;
 
   @override
@@ -56,52 +55,52 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             fontSize: 22,
                             color: Colors.white),
                       ),
-                      Common.textField(
-                        controller: _nameController,
-                        fillColor: Colors.deepPurple,
-                        text: "Full Name",
-                        prefixIcon: const Icon(
-                          Icons.person,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Common.textField(
+                      _textField(
+                          text: "full name",
+                          icon: const Icon(
+                            Icons.person,
+                            color: Colors.white,
+                          ),
+                          controller: _nameController),
+                      _textField(
+                        text: "Email",
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Email is required';
                           }
                         },
                         controller: _emailController,
-                        fillColor: Colors.deepPurple,
-                        text: "Email ",
-                        prefixIcon: const Icon(
-                          Icons.email_outlined,
+                        icon: const Icon(
+                          Icons.email,
                           color: Colors.white,
                         ),
                       ),
-                      Common.textField(
-                        controller: _mobileController,
-                        fillColor: Colors.deepPurple,
+                      _textField(
                         text: "Phone",
-                        prefixIcon: const Icon(
-                          Icons.dialer_sip,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Mobile  is required';
+                          }
+                        },
+                        controller: _mobileController,
+                        icon: const Icon(
+                          Icons.call,
                           color: Colors.white,
                         ),
                       ),
-                      Common.textField(
+                      _textField(
+                        suficon: const Icon(
+                          Icons.remove_red_eye,
+                          color: Colors.white,
+                        ),
+                        text: "Password",
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Password  is required';
                           }
                         },
-                        controller: _passController,
-                        fillColor: Colors.deepPurple,
-                        text: "Password",
-                        suffixIcon: const Icon(
-                          Icons.remove_red_eye,
-                          color: Colors.white,
-                        ),
-                        prefixIcon: const Icon(
+                        controller: _mobileController,
+                        icon: const Icon(
                           Icons.lock,
                           color: Colors.white,
                         ),
@@ -130,8 +129,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           onTap: () {
                             if (_formSignUp.currentState!.validate()) {
                               _createUser();
-                             _databaseProfile();
-
+                              _databaseProfile();
                             }
                           }),
                     ],
@@ -142,6 +140,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _textField(
+      {String? text,
+      Widget? icon,
+      TextEditingController? controller,
+      dynamic validator,
+      Widget? suficon}) {
+    return Common.custumtextfield(
+      validator: validator,
+      hintcolor: Colors.white,
+      color: Colors.white,
+      bordercolor: Colors.white,
+      controller: controller,
+      fillColor: Colors.deepPurple,
+      text: text,
+      prefixIcon: icon,
+      suffixIcon: suficon,
     );
   }
 
@@ -166,8 +183,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
       print(e);
     }
   }
-  _databaseProfile() {
 
+  _databaseProfile() {
     if (_nameController.text.isNotEmpty &&
         _emailController.text.isNotEmpty &&
         _mobileController.text.isNotEmpty &&
@@ -180,8 +197,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       });
       Navigator.push(
         context,
-        MaterialPageRoute(
-            builder: (context) => const LoginScreen()),
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
       );
     }
   }

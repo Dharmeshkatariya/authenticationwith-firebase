@@ -44,6 +44,9 @@ dependencies:
   firebase_phone_auth_handler:
   fluttertoast: ^8.2.1
   dropdown_button2: ^2.0.0
+  image_picker: ^0.8.7
+  firebase_storage: ^11.0.15
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

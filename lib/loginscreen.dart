@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled5/common.dart';
 import 'package:untitled5/signuppage.dart';
-import 'package:untitled5/signupscreen.dart';
 
 import 'logoutscreen.dart';
 
@@ -54,7 +53,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             fontWeight: FontWeight.bold,
                             color: Colors.white),
                       ),
-                      Common.textField(
+                      Common.custumtextfield(
+                        hintcolor: Colors.white,
+                        color: Colors.white,
+                        bordercolor: Colors.white,
                         text: "Email",
                         prefixIcon: const Icon(
                           Icons.email,
@@ -67,8 +69,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           }
                         },
                       ),
-                      Common.textField(
-                        fillColor: Colors.black87,
+                      Common.custumtextfield(
+                        hintcolor: Colors.white,
+                        color: Colors.white,
+                        bordercolor: Colors.white,
                         text: "Password",
                         prefixIcon: const Icon(
                           Icons.lock,
@@ -113,8 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          const SignPage()),
+                                      builder: (context) => const SignPage()),
                                 );
                               },
                               child: const Text(
@@ -163,8 +166,7 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-      } else if (e.code == 'wrong-password') {
-      }
+      } else if (e.code == 'wrong-password') {}
     }
   }
 }

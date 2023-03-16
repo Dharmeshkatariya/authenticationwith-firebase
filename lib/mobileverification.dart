@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled5/common.dart';
+
 import 'otpscreen.dart';
 
 class MobileScreen extends StatefulWidget {
@@ -15,7 +16,6 @@ class MobileScreen extends StatefulWidget {
 
 class _MobileScreenState extends State<MobileScreen> {
   final _mobileController = TextEditingController();
-  final _passController = TextEditingController();
   final _form = GlobalKey<FormState>();
 
   @override
@@ -29,7 +29,10 @@ class _MobileScreenState extends State<MobileScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Common.textField(
+                Common.custumtextfield(
+                  bordercolor: Colors.black,
+                  color: Colors.white,
+                  hintcolor: Colors.white,
                   controller: _mobileController,
                   fillColor: Colors.deepPurple,
                   text: "Phone",
@@ -46,7 +49,6 @@ class _MobileScreenState extends State<MobileScreen> {
                     onTap: () {
                       if (_form.currentState!.validate()) {
                         _mobileVerified();
-
                       }
                     }),
               ],
@@ -61,7 +63,6 @@ class _MobileScreenState extends State<MobileScreen> {
     FirebaseAuth auth = FirebaseAuth.instance;
     auth.verifyPhoneNumber(
       phoneNumber: "+91 ${_mobileController.text}",
-
       verificationFailed: (FirebaseAuthException e) {
         print(e.message);
       },
@@ -77,8 +78,7 @@ class _MobileScreenState extends State<MobileScreen> {
         shareP.setString("receive", receivedID);
         Navigator.push(
           context,
-          MaterialPageRoute(
-              builder: (context) => const OtpScreen()),
+          MaterialPageRoute(builder: (context) => const OtpScreen()),
         );
       },
       codeAutoRetrievalTimeout: (String verificationId) {

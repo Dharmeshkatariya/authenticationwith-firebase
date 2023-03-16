@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled5/common.dart';
@@ -19,7 +18,26 @@ class LogoutScreen extends StatefulWidget {
 class _LogoutScreenState extends State<LogoutScreen> {
   var email = "";
   var pass = "";
+  String networkImage = "";
   final databaseRef = FirebaseDatabase.instance.ref("Post");
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _setValue();
+    super.initState();
+  }
+
+  _setValue() async {
+    DatabaseReference starCountRef =
+        FirebaseDatabase.instance.ref('Post').child('Profile');
+    starCountRef.onValue.listen((DatabaseEvent event) {
+      Object? data = event.snapshot.value;
+      var user = data! as Map;
+      networkImage = user['userimage'];
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,19 +47,20 @@ class _LogoutScreenState extends State<LogoutScreen> {
         child: Column(
           children: [
             DrawerHeader(
-              padding: const EdgeInsets.only(top: 40),
+              padding: const EdgeInsets.only(top: 40,bottom: 10,right: 10,left: 10),
               decoration: const BoxDecoration(color: Colors.orange),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  networkImage.isNotEmpty?
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(40),
-                    child: Image.asset(
-                      "assets/images/b.jpg",
-                      height: 80,
+                    borderRadius: BorderRadius.circular(90),
+                    child: Image.network(
+                      networkImage,
+                      width: 120,
                       fit: BoxFit.cover,
                     ),
-                  ),
+                  ) : Container(),
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -54,6 +73,9 @@ class _LogoutScreenState extends State<LogoutScreen> {
                   ),
                 ],
               ),
+            ),
+            const SizedBox(
+              height: 10,
             ),
             Expanded(
               child: FirebaseAnimatedList(
@@ -81,13 +103,18 @@ class _LogoutScreenState extends State<LogoutScreen> {
                               snapshot: snapshot,
                               path: "address",
                               icon: const Icon(Icons.location_on)),
+                          _listTile(
+                              snapshot: snapshot,
+                              path: "gender",
+                              icon: const Icon(Icons.person_pin_rounded)),
                           Common.updateButton(
                               text: "Edit profile",
                               color: Colors.black,
-                              onTap: (){
+                              onTap: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => const AddPost()),
+                                  MaterialPageRoute(
+                                      builder: (context) => const AddPost()),
                                 );
                               },
                               textcolor: Colors.white),
@@ -115,11 +142,7 @@ class _LogoutScreenState extends State<LogoutScreen> {
         centerTitle: true,
         title: const Text('Logout Screen'),
       ),
-      body: Container(
-        child: Column(
-          children: [],
-        ),
-      ),
+      body: Container(),
     );
   }
 
@@ -145,13 +168,11 @@ class _LogoutScreenState extends State<LogoutScreen> {
       user?.delete();
       AuthCredential credentials =
           EmailAuthProvider.credential(email: email, password: pass);
-      print(user);
       var result = await user!.reauthenticateWithCredential(credentials);
-      await DatabaseEventType.childAdded;
+      DatabaseEventType.childAdded;
       await result.user!.delete();
       return true;
     } catch (e) {
-      print(e.toString());
       return null;
     }
   }

@@ -37,14 +37,19 @@ class _OtpScreenState extends State<OtpScreen> {
             const SizedBox(
               height: 20,
             ),
-            Common.textField(
+            Common.custumtextfield(
+                hintcolor: Colors.white,
+                color: Colors.white,
+                bordercolor: Colors.white,
                 controller: _otpController,
                 text: "",
                 fillColor: Colors.blue.shade300),
             const SizedBox(
               height: 20,
             ),
-            Common.container(
+            Common.updateButton(
+              color: Colors.orange.shade200,
+              textcolor: Colors.black,
                 text: "Verify now",
                 onTap: () {
                   _verifyOTPCode();
