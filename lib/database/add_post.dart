@@ -346,7 +346,7 @@ class _AddPostState extends State<AddPost> {
       var strEmail = email.split("@");
       databaseRef
           .child(strEmail[0])
-          .set({
+          .update({
             "userimage": storeImage,
             "fullName": _nameController.text,
             "email": _emailController.text,

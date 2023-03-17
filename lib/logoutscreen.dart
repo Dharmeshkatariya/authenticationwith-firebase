@@ -1,11 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled5/common.dart';
 import 'package:untitled5/loginscreen.dart';
 
+import 'database/add_firestore_data.dart';
 import 'database/add_post.dart';
 
 class LogoutScreen extends StatefulWidget {
@@ -20,6 +23,8 @@ class _LogoutScreenState extends State<LogoutScreen> {
   var pass = "";
   String networkImage = "";
   final databaseRef = FirebaseDatabase.instance.ref("User");
+  final fireStoreCollection = FirebaseFirestore.instance.collection("Users");
+  final fireStore = FirebaseFirestore.instance.collection("Users").snapshots();
 
   @override
   void initState() {
@@ -141,7 +146,54 @@ class _LogoutScreenState extends State<LogoutScreen> {
         centerTitle: true,
         title: const Text('Logout Screen'),
       ),
-      body: Container(),
+      body: Container(
+        child: Column(
+          children: [
+
+             StreamBuilder<QuerySnapshot>(
+               stream: fireStore,
+                 builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+
+               if(snapshot.connectionState == ConnectionState.waiting) {
+                 return const CircularProgressIndicator();
+               }
+               if(snapshot.hasError) {
+                 return const Text("Some error");
+               }
+                 return Expanded(
+                   child: ListView.builder(
+                       padding: const EdgeInsets.all(8),
+                       itemCount: snapshot.data!.docs.length,
+                       itemBuilder: (BuildContext context, int index) {
+                         return ListTile(
+                           onTap: (){
+                             // fireStoreCollection.doc(snapshot.data!.docs[index]["id"].toString()).update({
+                             //   "post" : "Dharmeshflkaouiyaushak"
+                             // });
+
+                             fireStoreCollection.doc(snapshot.data!.docs[index]["id"].toString()).delete();
+
+                           },
+                           title: Text(snapshot.data!.docs[index] ["post"].toString()),
+                           subtitle: Text(snapshot.data!.docs[index]["id"].toString()),
+                         );
+                       }),
+                 );
+                 }
+             ),
+
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.orange,
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const AddFirestoreData()),
+            );
+          },
+          child: const Icon(Icons.add)),
     );
   }
 
