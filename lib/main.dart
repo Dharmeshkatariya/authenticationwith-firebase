@@ -83,7 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
   _login() async {
     var shareP = await SharedPreferences.getInstance();
     bool isLogin = shareP.getBool("login") ?? false;
-    Timer(Duration(seconds: 12), () {
+    Timer(Duration(seconds: 2), () {
       if (isLogin) {
         Navigator.pushReplacement(
           context,

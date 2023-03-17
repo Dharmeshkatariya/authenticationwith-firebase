@@ -6,6 +6,7 @@ class Common {
   static Widget container({
     String? text,
     GestureTapCallback? onTap,
+    bool loading = false
   }) {
     return GestureDetector(
       onTap: onTap,
@@ -16,7 +17,7 @@ class Common {
           color: Colors.white,
           borderRadius: BorderRadius.circular(18),
         ),
-        child: Text(
+        child: loading ? const CircularProgressIndicator() :Text(
           text!,
           style: const TextStyle(
               fontWeight: FontWeight.w600, color: Colors.blue, fontSize: 18),
@@ -66,6 +67,7 @@ maxLines: maxline,
 
   static Widget updateButton({
     String? text,
+    bool loading = false,
     GestureTapCallback? onTap,
     Color? color,
     Color? textcolor,
@@ -79,7 +81,7 @@ maxLines: maxline,
           color: color,
           borderRadius: BorderRadius.circular(18),
         ),
-        child: Text(
+        child: loading? const CircularProgressIndicator() : Text(
           text!,
           style: TextStyle(
               fontWeight: FontWeight.w600, color: textcolor, fontSize: 18),

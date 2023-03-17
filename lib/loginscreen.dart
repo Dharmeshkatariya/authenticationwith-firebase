@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled5/common.dart';
 import 'package:untitled5/signuppage.dart';
+import 'package:untitled5/utils/utills.dart';
 
+import 'forgetpassword.dart';
 import 'logoutscreen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -17,6 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passController = TextEditingController();
   final _form1 = GlobalKey<FormState>();
+  bool loading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -91,14 +94,22 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       Common.container(
                           text: "Login",
+                          loading: loading,
                           onTap: () {
                             if (_form1.currentState!.validate()) {
+                              setState(() {
+                                loading = true;
+                              });
                               _userLogin();
                             }
                           }),
                       GestureDetector(
                         onTap: () {
-                          _resetPass();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const ForgotPassword()),
+                          );
                         },
                         child: const Text(
                           "Forget your password?",
@@ -140,26 +151,25 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  _resetPass() async {
-    await FirebaseAuth.instance
-        .sendPasswordResetEmail(email: _emailController.text);
-  }
-
   _userLogin() async {
     try {
-      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passController.text,
-      );
-      var shareP = await SharedPreferences.getInstance();
-      shareP.setString("email", _emailController.text);
-      shareP.setBool("login", true);
-      shareP.setString("pass", _passController.text);
-
+      final credential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+            email: _emailController.text,
+            password: _passController.text,
+          )
+          .then((value) => Utils.toastMessage("login successfully "));
       User? user = FirebaseAuth.instance.currentUser;
       if (user != null && !user.emailVerified) {
         await user.sendEmailVerification();
       }
+      var shareP = await SharedPreferences.getInstance();
+      shareP.setString("email", _emailController.text);
+      shareP.setBool("login", true);
+      shareP.setString("pass", _passController.text);
+      setState(() {
+        loading = false;
+      });
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const LogoutScreen()),

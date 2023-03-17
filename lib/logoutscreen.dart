@@ -19,7 +19,7 @@ class _LogoutScreenState extends State<LogoutScreen> {
   var email = "";
   var pass = "";
   String networkImage = "";
-  final databaseRef = FirebaseDatabase.instance.ref("Post");
+  final databaseRef = FirebaseDatabase.instance.ref("User");
 
   @override
   void initState() {
@@ -29,11 +29,14 @@ class _LogoutScreenState extends State<LogoutScreen> {
   }
 
   _setValue() async {
+    var shareP = await SharedPreferences.getInstance();
+    email = shareP.getString("email")!;
+    var arrayEmail = email.split("@");
     DatabaseReference starCountRef =
-        FirebaseDatabase.instance.ref('Post').child('Profile');
+        FirebaseDatabase.instance.ref('User').child(arrayEmail[0]);
     starCountRef.onValue.listen((DatabaseEvent event) {
       Object? data = event.snapshot.value;
-      var user = data! as Map;
+      var user = data as Map;
       networkImage = user['userimage'];
       setState(() {});
     });
@@ -47,30 +50,22 @@ class _LogoutScreenState extends State<LogoutScreen> {
         child: Column(
           children: [
             DrawerHeader(
-              padding: const EdgeInsets.only(top: 40,bottom: 10,right: 10,left: 10),
+              padding: const EdgeInsets.only(
+                  top: 40, bottom: 10, right: 10, left: 10),
               decoration: const BoxDecoration(color: Colors.orange),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  networkImage.isNotEmpty?
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(90),
-                    child: Image.network(
-                      networkImage,
-                      width: 120,
-                      fit: BoxFit.cover,
-                    ),
-                  ) : Container(),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const AddPost()),
-                      );
-                    },
-                    child: const Icon(Icons.more_vert),
-                  ),
+                  networkImage.isNotEmpty
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(90),
+                          child: Image.network(
+                            networkImage,
+                            width: 120,
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                      : Container()
                 ],
               ),
             ),
@@ -111,10 +106,14 @@ class _LogoutScreenState extends State<LogoutScreen> {
                               text: "Edit profile",
                               color: Colors.black,
                               onTap: () {
+                                String userEmail =
+                                    snapshot.child('email').value.toString();
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => const AddPost()),
+                                      builder: (context) => AddPost(
+                                            path: userEmail,
+                                          )),
                                 );
                               },
                               textcolor: Colors.white),

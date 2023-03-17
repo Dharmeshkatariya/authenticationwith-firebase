@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled5/common.dart';
+import 'package:untitled5/utils/utills.dart';
 
 import 'otpscreen.dart';
 
@@ -17,6 +18,7 @@ class MobileScreen extends StatefulWidget {
 class _MobileScreenState extends State<MobileScreen> {
   final _mobileController = TextEditingController();
   final _form = GlobalKey<FormState>();
+  bool loading = false ;
 
   @override
   Widget build(BuildContext context) {
@@ -45,9 +47,13 @@ class _MobileScreenState extends State<MobileScreen> {
                   height: 20,
                 ),
                 Common.container(
+                  loading: loading,
                     text: "Sign Up",
                     onTap: () {
                       if (_form.currentState!.validate()) {
+                      setState(() {
+                        loading = true;
+                      });
                         _mobileVerified();
                       }
                     }),
@@ -60,30 +66,38 @@ class _MobileScreenState extends State<MobileScreen> {
   }
 
   _mobileVerified() async {
+  try{
     FirebaseAuth auth = FirebaseAuth.instance;
     auth.verifyPhoneNumber(
       phoneNumber: "+91 ${_mobileController.text}",
       verificationFailed: (FirebaseAuthException e) {
-        print(e.message);
       },
       verificationCompleted: (PhoneAuthCredential credential) async {
         // await auth
         //     .signInWithCredential(credential)
         //     .then((value) => print('Logged In Successfully'));
       },
+
       codeSent: (String verificationId, int? resendToken) async {
+
         Common.verificationId = verificationId;
         var receivedID = verificationId;
         var shareP = await SharedPreferences.getInstance();
         shareP.setString("receive", receivedID);
+        setState(() {
+          loading = false;
+        });
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const OtpScreen()),
         );
       },
       codeAutoRetrievalTimeout: (String verificationId) {
-        print('TimeOut');
       },
-    );
+    ).then((value) => Utils.toastMessage("Verifivation code send in message")).onError((error, stackTrace) =>
+        Utils.toastMessage(error.toString()));
+  }catch(e){
+    print(e);
+  }
   }
 }

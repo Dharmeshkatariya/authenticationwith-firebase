@@ -1,61 +1,67 @@
 import 'dart:io';
-
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:untitled5/common.dart';
+import 'package:untitled5/utils/utills.dart';
 
 class AddPost extends StatefulWidget {
-  const AddPost({Key? key}) : super(key: key);
+  const AddPost({super.key, required this.path});
+
+  final String path;
 
   @override
   State<AddPost> createState() => _AddPostState();
 }
 
 class _AddPostState extends State<AddPost> {
-  var imagePath = "";
-
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _mobileController = TextEditingController();
   final _addressController = TextEditingController();
-
-  final databaseRef = FirebaseDatabase.instance.ref("Post");
-  String selectedImage = "";
   final List<String> genderItems = [
     'Male',
     'Female',
     "Other",
   ];
-  String selectedValue = "";
+  String selectedGenderValue = "";
+  String selectedImage = "";
+  var imagePath = "";
   String genderValue = "";
+  String updateemail = "";
+  final databaseRef = FirebaseDatabase.instance.ref("User");
   firebase_storage.FirebaseStorage storage =
       firebase_storage.FirebaseStorage.instance;
+  bool loading = false;
 
   @override
   void initState() {
-    // TODO: implement initState
     _setValue();
+    // TODO: implement initState
     super.initState();
   }
 
   _setValue() async {
+    updateemail = widget.path.toString();
+    var arrayEmail = updateemail.split("@");
     DatabaseReference starCountRef =
-        FirebaseDatabase.instance.ref('Post').child('Profile');
+        FirebaseDatabase.instance.ref('User').child(arrayEmail[0]);
     starCountRef.onValue.listen((DatabaseEvent event) {
       Object? data = event.snapshot.value;
       var user = data! as Map;
-      selectedImage = user["userimage"];
-      genderValue = user["gender"];
       _nameController.text = user['fullName'];
-      _emailController.text = user['email'];
+      _emailController.text = updateemail;
       _mobileController.text = user['Mobile'];
       _addressController.text = user['address'];
+      selectedImage = user["userimage"];
+      genderValue = user["gender"];
       setState(() {});
     });
   }
+
+  final _form = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +70,7 @@ class _AddPostState extends State<AddPost> {
         child: Column(
           children: [
             Container(
-              padding: const EdgeInsets.only(bottom: 30, top: 10),
+              padding: const EdgeInsets.only(bottom: 30, top: 10, left: 10),
               width: double.infinity,
               color: Colors.orange,
               child: Column(
@@ -115,94 +121,134 @@ class _AddPostState extends State<AddPost> {
     );
   }
 
-  String networkImage = '';
-
   Widget _column() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Center(
-          child: GestureDetector(
-            onTap: () {
-              _getImageGallery();
-            },
-            child: Container(
-                color: Colors.blue.shade50,
-                width: double.infinity,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 90, vertical: 10),
-                margin: const EdgeInsets.symmetric(vertical: 12),
-                child: selectedImage.isEmpty
-                    ? Container(
-                        decoration: BoxDecoration(
-                            color: Colors.orange.shade50,
-                            shape: BoxShape.circle),
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 25),
-                        child: const Icon(Icons.person),
-                      )
-                    : ClipRRect(
-                        borderRadius: BorderRadius.circular(50),
-                        child: Image.network(
-                          selectedImage,
-                          fit: BoxFit.fill,
-                          height: 100,
-                        ))),
-          ),
-        ),
-        _textStyle(text: "FullName"),
-        const SizedBox(
-          height: 10,
-        ),
-        _textField(text: "Full name", controller: _nameController),
-        const SizedBox(
-          height: 10,
-        ),
-        _textStyle(text: "Email"),
-        const SizedBox(
-          height: 10,
-        ),
-        _textField(text: "Email", controller: _emailController),
-        const SizedBox(
-          height: 10,
-        ),
-        _textStyle(text: "Number"),
-        const SizedBox(
-          height: 10,
-        ),
-        _textField(text: "Mobile", controller: _mobileController),
-        const SizedBox(
-          height: 15,
-        ),
-        Row(
-          children: [
-            _textStyle(text: "Gender"),
-            const SizedBox(
-              width: 20,
+    return Form(
+      key: _form,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(
+            child: GestureDetector(
+              onTap: () {
+                _getImageGallery();
+              },
+              child: loading
+                  ? const CircularProgressIndicator()
+                  : Container(
+                      color: Colors.blue.shade50,
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 90, vertical: 10),
+                      margin: const EdgeInsets.symmetric(vertical: 12),
+                      child: imagePath.isNotEmpty
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(50),
+                              child: Image.file(File(imagePath)))
+                          : selectedImage.isEmpty
+                              ? const CircularProgressIndicator(
+                                  strokeWidth: 6,
+                                )
+                              : Image.network(selectedImage),
+                    ),
             ),
-            Expanded(child: _dropDown()),
-          ],
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        _textStyle(text: "Address"),
-        const SizedBox(
-          height: 10,
-        ),
-        _textField(text: "Address", controller: _addressController, maxline: 4),
-        const SizedBox(
-          height: 30,
-        ),
-        Common.updateButton(
-            text: "Update",
-            textcolor: Colors.white,
-            color: Colors.black87,
-            onTap: () {
-              _imageUpdate();
-            })
-      ],
+          ),
+          _textStyle(text: "FullName"),
+          const SizedBox(
+            height: 10,
+          ),
+          _textField(
+              text: "Full name",
+              controller: _nameController,
+              validator: (value) {
+                if (_nameController.text.isEmpty) {
+                  return 'Name is required';
+                }
+              }),
+          const SizedBox(
+            height: 10,
+          ),
+          _textStyle(text: "Email"),
+          const SizedBox(
+            height: 10,
+          ),
+          _textField(
+            text: "Email",
+            controller: _emailController,
+            validator: (value) {
+              if (_emailController.text.isEmpty) {
+                return 'Email is required';
+              }
+              if (!RegExp(r'\S+@\S+\.\S+').hasMatch(_emailController.text)) {
+                return "Please enter a valid email address";
+              }
+              return null;
+            },
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          _textStyle(text: "Number"),
+          const SizedBox(
+            height: 10,
+          ),
+          _textField(
+            text: "Mobile",
+            controller: _mobileController,
+            validator: (value) {
+              if (_mobileController.text.isEmpty) {
+                return 'Mobile is required';
+              }
+            },
+          ),
+          const SizedBox(
+            height: 15,
+          ),
+          Row(
+            children: [
+              _textStyle(text: "Gender"),
+              const SizedBox(
+                width: 20,
+              ),
+              Expanded(child: _dropDown()),
+            ],
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          _textStyle(text: "Address"),
+          const SizedBox(
+            height: 10,
+          ),
+          _textField(
+            text: "Address",
+            controller: _addressController,
+            maxline: 4,
+            validator: (value) {
+              if (_addressController.text.isEmpty) {
+                return 'Address is required';
+              }
+            },
+          ),
+          const SizedBox(
+            height: 30,
+          ),
+          Common.updateButton(
+              loading: loading,
+              text: "Update",
+              textcolor: Colors.white,
+              color: Colors.black87,
+              onTap: () {
+                if (imagePath.isEmpty && selectedImage.isEmpty) {
+                  Utils.toastMessage("select image");
+                } else if (_form.currentState!.validate()) {
+                  setState(() {
+                    loading = true;
+                  });
+                  _imageUpdate();
+                }
+              })
+        ],
+      ),
     );
   }
 
@@ -215,13 +261,15 @@ class _AddPostState extends State<AddPost> {
         ),
       ),
       isExpanded: true,
-      hint: genderValue.isNotEmpty? Text(
-        genderValue,
-        style: const TextStyle(fontSize: 14),
-      ) : const Text(
-        "Select the gender",
-        style:  TextStyle(fontSize: 14),
-      ),
+      hint: genderValue.isNotEmpty
+          ? Text(
+              genderValue,
+              style: const TextStyle(fontSize: 14),
+            )
+          : const Text(
+              "Select the gender",
+              style: TextStyle(fontSize: 14),
+            ),
       items: genderItems
           .map((item) => DropdownMenuItem(
                 value: item,
@@ -240,10 +288,10 @@ class _AddPostState extends State<AddPost> {
         return null;
       },
       onChanged: (value) {
-        selectedValue = value.toString();
+        selectedGenderValue = value.toString();
       },
       onSaved: (value) {
-        selectedValue = value.toString();
+        selectedGenderValue = value.toString();
       },
       buttonStyleData: const ButtonStyleData(
         height: 30,
@@ -258,8 +306,12 @@ class _AddPostState extends State<AddPost> {
   }
 
   Widget _textField(
-      {String? text, TextEditingController? controller, int? maxline}) {
+      {String? text,
+      TextEditingController? controller,
+      int? maxline,
+      dynamic validator}) {
     return Common.custumtextfield(
+        validator: validator,
         maxline: maxline,
         bordercolor: Colors.black87,
         fillColor: Colors.white,
@@ -278,21 +330,37 @@ class _AddPostState extends State<AddPost> {
   }
 
   _imageUpdate() async {
-    var id = DateTime.now().microsecondsSinceEpoch.toString();
-    firebase_storage.Reference ref =
-        firebase_storage.FirebaseStorage.instance.ref("/filename$id ");
-    firebase_storage.UploadTask uploadTask = ref.putFile(File(imagePath));
-    await Future.value(uploadTask);
-    var newImageUrl = await ref.getDownloadURL();
-    networkImage = newImageUrl;
-    setState(() {});
-    databaseRef.child("Profile").set({
-      "userimage": networkImage,
-      "fullName": _nameController.text,
-      "email": _emailController.text,
-      "Mobile": _mobileController.text,
-      "address": _addressController.text,
-      "gender": selectedValue,
-    });
+    try {
+      String storeImage = '';
+      var id = DateTime.now().microsecondsSinceEpoch.toString();
+      firebase_storage.Reference ref =
+          firebase_storage.FirebaseStorage.instance.ref('/filename/' "$id");
+      firebase_storage.UploadTask uploadTask =
+          ref.putFile(File(imagePath.isEmpty ? selectedImage : imagePath));
+      await Future.value(uploadTask);
+      storeImage = await ref.getDownloadURL();
+      setState(() {
+        loading = true;
+      });
+      String email = _emailController.text;
+      var strEmail = email.split("@");
+      databaseRef
+          .child(strEmail[0])
+          .set({
+            "userimage": storeImage,
+            "fullName": _nameController.text,
+            "email": _emailController.text,
+            "Mobile": _mobileController.text,
+            "address": _addressController.text,
+            "gender": selectedGenderValue,
+          })
+          .then((value) => Utils.toastMessage("update profile"))
+          .onError((error, stackTrace) => Utils.toastMessage(error.toString()));
+      setState(() {
+        loading = false;
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 }

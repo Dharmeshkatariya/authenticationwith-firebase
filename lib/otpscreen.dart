@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled5/common.dart';
 import 'package:untitled5/logoutscreen.dart';
+import 'package:untitled5/utils/utills.dart';
 
 class OtpScreen extends StatefulWidget {
   const OtpScreen({Key? key}) : super(key: key);
@@ -14,6 +15,7 @@ class OtpScreen extends StatefulWidget {
 class _OtpScreenState extends State<OtpScreen> {
   final _otpController = TextEditingController();
   var receivedID = "";
+  bool loading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -48,17 +50,26 @@ class _OtpScreenState extends State<OtpScreen> {
               height: 20,
             ),
             Common.updateButton(
-              color: Colors.orange.shade200,
-              textcolor: Colors.black,
+                loading: loading,
+                color: Colors.orange.shade200,
+                textcolor: Colors.black,
                 text: "Verify now",
                 onTap: () {
+                  setState(() {
+                    loading = true;
+                  });
                   _verifyOTPCode();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LogoutScreen()),
+                  );
                 }),
           ],
         ),
       ),
     ));
   }
+
   _verifyOTPCode() async {
     FirebaseAuth auth = FirebaseAuth.instance;
     var shareP = await SharedPreferences.getInstance();
@@ -66,18 +77,20 @@ class _OtpScreenState extends State<OtpScreen> {
       receivedID = shareP.getString("receive")!;
       String verificationId = Common.verificationId;
       String otp = _otpController.text.trim();
-      UserCredential userCred = await auth.signInWithCredential(
-        PhoneAuthProvider.credential(
-          verificationId: verificationId,
-          smsCode: otp,
-        ),
-      );
-      print(userCred);
+
+      UserCredential userCred = await auth
+          .signInWithCredential(
+            PhoneAuthProvider.credential(
+              verificationId: verificationId,
+              smsCode: otp,
+            ),
+          )
+          .then((value) => Utils.toastMessage("User login syccesfully "));
+         setState(() {
+           loading = false;
+         });
       shareP.setBool("login", true);
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => LogoutScreen()),
-      );
+
     } catch (e) {
       print(e);
     }

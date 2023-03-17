@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled5/common.dart';
 import 'package:untitled5/loginscreen.dart';
+import 'package:untitled5/utils/utills.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -19,8 +19,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _mobileController = TextEditingController();
   final _passController = TextEditingController();
   final _emailController = TextEditingController();
-  final databaseRef = FirebaseDatabase.instance.ref("Post");
+  final databaseRef = FirebaseDatabase.instance.ref("User");
   bool isChecked = false;
+  bool loading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +100,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             return 'Password  is required';
                           }
                         },
-                        controller: _mobileController,
+                        controller: _passController,
                         icon: const Icon(
                           Icons.lock,
                           color: Colors.white,
@@ -125,6 +126,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ],
                       ),
                       Common.container(
+                          loading: loading,
                           text: "Sign Up",
                           onTap: () {
                             if (_formSignUp.currentState!.validate()) {
@@ -164,32 +166,34 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   _createUser() async {
     try {
-      final credential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passController.text,
-      );
+      setState(() {
+        loading = true;
+      });
+      final credential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+            email: _emailController.text,
+            password: _passController.text,
+          )
+          .then((value) => Utils.toastMessage(value.toString()))
+          .onError((error, stackTrace) => Utils.toastMessage(error.toString()));
       var shareP = await SharedPreferences.getInstance();
       shareP.setString("email", _emailController.text);
       shareP.setString("pass", _passController.text);
-      print(credential.user);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
       } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
       }
     } catch (e) {
-      print(e);
     }
   }
-
   _databaseProfile() {
     if (_nameController.text.isNotEmpty &&
         _emailController.text.isNotEmpty &&
         _mobileController.text.isNotEmpty &&
         _passController.text.isNotEmpty) {
-      databaseRef.child("Profile").set({
+      String email = _emailController.text;
+      var strEmail = email.split("@");
+      databaseRef.child(strEmail[0]).set({
         "fullName": _nameController.text,
         "email": _emailController.text,
         "Mobile": _mobileController.text,
