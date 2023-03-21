@@ -11,6 +11,7 @@ import 'notification_service/notification_service.dart';
 @pragma("vm-entry point")
 Future<void> backgroundHandlerMessage(RemoteMessage message) async {
   await Firebase.initializeApp();
+
   print(message.notification!.title.toString());
 }
 
@@ -57,7 +58,6 @@ class _MyHomePageState extends State<MyHomePage> {
     NotificationService().init();
     super.initState();
   }
-
   _onNotification() {
     FirebaseMessaging.onMessage.listen((message) {
       String title = message.notification!.title.toString();
@@ -65,6 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
       NotificationService().showNotification(id: 123, title: title, body: body);
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

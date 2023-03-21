@@ -4,20 +4,26 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationService {
-
-  static final NotificationService _notificationService = NotificationService._internal();
+  static final NotificationService _notificationService =
+      NotificationService._internal();
 
   factory NotificationService() {
     return _notificationService;
   }
+
   NotificationService._internal();
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
   Future<void> init() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
     final fcmToken = await FirebaseMessaging.instance.getToken();
     print(fcmToken);
     print("------------");
-    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('ic_logo');
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('ic_logo');
 
     var initializationSettingsIOS = const DarwinInitializationSettings(
       requestSoundPermission: false,
@@ -32,7 +38,8 @@ class NotificationService {
             iOS: initializationSettingsIOS,
             macOS: null);
 
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings, onDidReceiveNotificationResponse: onDidReceiveNotificationResponse);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onDidReceiveNotificationResponse: onDidReceiveNotificationResponse);
     await flutterLocalNotificationsPlugin.cancelAll();
   }
 
@@ -81,6 +88,5 @@ class NotificationService {
       NotificationResponse notificationResponse) async {
     final String? payload = notificationResponse.payload;
     if (notificationResponse.payload != null) {}
-
   }
 }

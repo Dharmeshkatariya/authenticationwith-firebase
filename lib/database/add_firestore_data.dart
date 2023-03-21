@@ -51,7 +51,7 @@ class _AddFirestoreDataState extends State<AddFirestoreData> {
                     loading = false;
                   },
                   text: "Add Post ",
-                  color: Colors.blue.shade50,
+                  color: Colors.white,
                   textcolor: Colors.black),
             )
           ],
