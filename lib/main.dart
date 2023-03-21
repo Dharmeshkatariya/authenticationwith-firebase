@@ -44,7 +44,6 @@ class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
   final String title;
-
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -66,7 +65,6 @@ class _MyHomePageState extends State<MyHomePage> {
       NotificationService().showNotification(id: 123, title: title, body: body);
     });
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,29 +86,6 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-
-  // _appTerminateNotification(){
-  //   // 1. This method call when app in terminated state and you get a notification
-  //   // when you click on notification app open from terminated state and you can get notification data in this method
-  //
-  //   FirebaseMessaging.instance.getInitialMessage().then(
-  //         (message) {
-  //       print("FirebaseMessaging.instance.getInitialMessage");
-  //       if (message != null) {
-  //         print("New Notification");
-  //         // if (message.data['_id'] != null) {
-  //         //   Navigator.of(context).push(
-  //         //     MaterialPageRoute(
-  //         //       builder: (context) => DemoScreen(
-  //         //         id: message.data['_id'],
-  //         //       ),
-  //         //     ),
-  //         //   );
-  //         // }
-  //       }
-  //     },
-  //   );
-  // }
 
   _login() async {
     var shareP = await SharedPreferences.getInstance();
