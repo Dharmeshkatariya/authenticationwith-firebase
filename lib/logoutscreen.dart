@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled5/common.dart';
@@ -146,44 +145,48 @@ class _LogoutScreenState extends State<LogoutScreen> {
         centerTitle: true,
         title: const Text('Logout Screen'),
       ),
-      body: Container(
-        child: Column(
-          children: [
+      body: Column(
+        children: [
 
-             StreamBuilder<QuerySnapshot>(
-               stream: fireStore,
-                 builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
-
-               if(snapshot.connectionState == ConnectionState.waiting) {
-                 return const CircularProgressIndicator();
-               }
-               if(snapshot.hasError) {
-                 return const Text("Some error");
-               }
-                 return Expanded(
-                   child: ListView.builder(
-                       padding: const EdgeInsets.all(8),
-                       itemCount: snapshot.data!.docs.length,
-                       itemBuilder: (BuildContext context, int index) {
-                         return ListTile(
-                           onTap: (){
-                             // fireStoreCollection.doc(snapshot.data!.docs[index]["id"].toString()).update({
-                             //   "post" : "Dharmeshflkaouiyaushak"
-                             // });
-
-                             fireStoreCollection.doc(snapshot.data!.docs[index]["id"].toString()).delete();
-
-                           },
-                           title: Text(snapshot.data!.docs[index] ["post"].toString()),
-                           subtitle: Text(snapshot.data!.docs[index]["id"].toString()),
-                         );
-                       }),
-                 );
-                 }
-             ),
-
-          ],
-        ),
+          StreamBuilder<QuerySnapshot>(
+              stream: fireStore,
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                }
+                if (snapshot.hasError) {
+                  return const Text("Some error");
+                }
+                return Expanded(
+                  child: ListView.builder(
+                      padding: const EdgeInsets.all(8),
+                      itemCount: snapshot.data!.docs.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return ListTile(
+                          splashColor: Colors.blue,
+                          iconColor: Colors.red,
+                          trailing: IconButton(
+                              onPressed: () {
+                                _snapshotDelete(
+                                    snapshot: snapshot, index: index);
+                              },
+                              icon: const Icon(Icons.delete)),
+                          leading: IconButton(
+                              onPressed: () {
+                                _snapShotUpdate(
+                                    snapshot: snapshot, index: index);
+                              },
+                              icon: const Icon(Icons.more_vert)),
+                          title: Text(
+                              snapshot.data!.docs[index]["post"].toString()),
+                          subtitle:
+                              Text(snapshot.data!.docs[index]["id"].toString()),
+                        );
+                      }),
+                );
+              }),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.orange,
@@ -195,6 +198,20 @@ class _LogoutScreenState extends State<LogoutScreen> {
           },
           child: const Icon(Icons.add)),
     );
+  }
+
+  _snapShotUpdate(
+      {required AsyncSnapshot<QuerySnapshot> snapshot, required int index}) {
+    fireStoreCollection
+        .doc(snapshot.data!.docs[index]["id"].toString())
+        .update({"post": "Dharmesh katariya"});
+  }
+
+  _snapshotDelete(
+      {required AsyncSnapshot<QuerySnapshot> snapshot, required int index}) {
+    fireStoreCollection
+        .doc(snapshot.data!.docs[index]["id"].toString())
+        .delete();
   }
 
   Widget _listTile(

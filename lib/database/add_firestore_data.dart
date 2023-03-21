@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled5/common.dart';
 import 'package:untitled5/utils/utills.dart';
+
 class AddFirestoreData extends StatefulWidget {
   const AddFirestoreData({Key? key}) : super(key: key);
 
@@ -12,7 +13,8 @@ class AddFirestoreData extends StatefulWidget {
 class _AddFirestoreDataState extends State<AddFirestoreData> {
   final _postController = TextEditingController();
   bool loading = false;
- final fireStore= FirebaseFirestore.instance.collection("Users");
+  final fireStore = FirebaseFirestore.instance.collection("Users");
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,40 +38,41 @@ class _AddFirestoreDataState extends State<AddFirestoreData> {
             const SizedBox(
               height: 30,
             ),
-            Common.updateButton(
-              loading: loading,
-              onTap: (){
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Common.updateButton(
+                  loading: loading,
+                  onTap: () {
+                    setState(() {
+                      loading = true;
+                    });
+                    _fireStoreData();
 
-               setState(() {
-                 loading = true;
-               });
-                _fireStoreData();
-
-              },
-                text: "Add Post ",
-                color: Colors.blue.shade200,
-                textcolor: Colors.black)
+                    loading = false;
+                  },
+                  text: "Add Post ",
+                  color: Colors.blue.shade50,
+                  textcolor: Colors.black),
+            )
           ],
         ),
       ),
     );
   }
 
-  _fireStoreData(){
-    try{String id = DateTime.now().microsecondsSinceEpoch.toString();
-    fireStore.doc(id).set({
-      "post" : _postController.text,
-      "id" : id
-    }).then((value) => {
-      Utils.toastMessage("Post added"),
-
-    });
-    }catch(e){
+  _fireStoreData() {
+    try {
+      String id = DateTime.now().microsecondsSinceEpoch.toString();
+      fireStore
+          .doc(id)
+          .set({"post": _postController.text, "id": id}).then((value) => {
+                Utils.toastMessage("Post added"),
+              });
+    } catch (e) {
       print(e);
     }
     setState(() {
       loading = false;
     });
-
   }
 }
