@@ -40,11 +40,6 @@ class ChatAppScreen extends GetView<ChatAppController> {
                               ),
                             )
                           : Container(),
-                      IconButton(
-                          onPressed: () {
-                            Get.toNamed(NameRoutes.addPostScreen);
-                          },
-                          icon: const Icon(Icons.more_vert))
                     ],
                   ),
                 ),
