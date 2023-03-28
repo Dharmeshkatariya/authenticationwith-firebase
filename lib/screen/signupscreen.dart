@@ -3,10 +3,8 @@ import 'package:get/get.dart';
 import 'package:untitled5/common.dart';
 import 'package:untitled5/controller/signuopscreen_controller.dart';
 
-class SignUpScreen extends StatelessWidget {
+class SignUpScreen extends GetView<SignUpScreenController> {
   SignUpScreen({Key? key}) : super(key: key);
-
-  final _signScreenController = Get.put(SignUpScreenController());
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +47,7 @@ class SignUpScreen extends StatelessWidget {
                             Icons.person,
                             color: Colors.white,
                           ),
-                          controller: _signScreenController.nameController),
+                          controller: controller.nameController),
                       _textField(
                         text: "Email",
                         validator: (value) {
@@ -57,7 +55,7 @@ class SignUpScreen extends StatelessWidget {
                             return 'Email is required';
                           }
                         },
-                        controller: _signScreenController.emailController,
+                        controller: controller.emailController,
                         icon: const Icon(
                           Icons.email,
                           color: Colors.white,
@@ -70,7 +68,7 @@ class SignUpScreen extends StatelessWidget {
                             return 'Mobile  is required';
                           }
                         },
-                        controller: _signScreenController.mobileController,
+                        controller: controller.mobileController,
                         icon: const Icon(
                           Icons.call,
                           color: Colors.white,
@@ -87,7 +85,7 @@ class SignUpScreen extends StatelessWidget {
                             return 'Password  is required';
                           }
                         },
-                        controller: _signScreenController.passController,
+                        controller: controller.passController,
                         icon: const Icon(
                           Icons.lock,
                           color: Colors.white,
@@ -97,9 +95,9 @@ class SignUpScreen extends StatelessWidget {
                         children: [
                           Checkbox(
                               checkColor: Colors.white,
-                              value: _signScreenController.isChecked.value,
+                              value: controller.isChecked.value,
                               onChanged: (bool? value) {
-                                _signScreenController.isChecked.value = value!;
+                                controller.isChecked.value = value!;
                               }),
                           const Text(
                             "yes agree all Terms & Condition",
@@ -111,13 +109,12 @@ class SignUpScreen extends StatelessWidget {
                         ],
                       ),
                       Common.container(
-                          loading: _signScreenController.loading.value,
+                          loading: controller.loading.value,
                           text: "Sign Up",
                           onTap: () {
-                            if (formSignUp.currentState!
-                                .validate()) {
-                              _signScreenController.createUser();
-                              _signScreenController.databaseProfile();
+                            if (formSignUp.currentState!.validate()) {
+                              controller.createUser();
+                              controller.databaseProfile();
                             }
                           }),
                     ],

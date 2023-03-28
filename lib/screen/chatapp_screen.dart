@@ -4,34 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:untitled5/common.dart';
 import 'package:untitled5/controller/chatapp_controller.dart';
-import 'package:untitled5/screen/loginscreen.dart';
-import 'database/add_firestore_data.dart';
-import 'database/add_post.dart';
+import '../routes/name_routes.dart';
 
-class ChatAppScreen extends StatefulWidget {
-  const ChatAppScreen({Key? key}) : super(key: key);
-
-  @override
-  State<ChatAppScreen> createState() => _ChatAppScreenState();
-}
-
-class _ChatAppScreenState extends State<ChatAppScreen> {
-  final _chatAppController = Get.put(ChatAppController());
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    _chatAppController.setValue();
-    super.initState();
-  }
+class ChatAppScreen extends GetView<ChatAppController>{
+   ChatAppScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    controller.setValue();
     return Obx(() => Scaffold(
           floatingActionButton: FloatingActionButton(
               backgroundColor: Colors.orange,
               onPressed: () {
-              Get.to(AddFirestoreData());
+               Get.toNamed(NameRoutes.addFireStoreScreen);
               },
               child: const Icon(Icons.add)),
           drawerScrimColor: Colors.white,
@@ -45,11 +30,11 @@ class _ChatAppScreenState extends State<ChatAppScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _chatAppController.networkImage.value.isNotEmpty
+                      controller.networkImage.value.isNotEmpty
                           ? ClipRRect(
                               borderRadius: BorderRadius.circular(90),
                               child: Image.network(
-                                _chatAppController.networkImage.value,
+                                controller.networkImage.value,
                                 width: 120,
                                 fit: BoxFit.cover,
                               ),
@@ -63,7 +48,7 @@ class _ChatAppScreenState extends State<ChatAppScreen> {
                 ),
                 Expanded(
                   child: FirebaseAnimatedList(
-                      query: _chatAppController.databaseRef,
+                      query: controller.databaseRef,
                       itemBuilder: (BuildContext context, DataSnapshot snapshot,
                           Animation<double> animation, int index) {
                         return Container(
@@ -73,23 +58,28 @@ class _ChatAppScreenState extends State<ChatAppScreen> {
                             children: [
                               _listTile(
                                   snapshot: snapshot,
+                                  context: context,
                                   path: "fullName",
                                   icon: const Icon(Icons.person)),
                               _listTile(
                                   snapshot: snapshot,
+                                  context: context,
                                   path: "email",
                                   icon: const Icon(Icons.email)),
                               _listTile(
                                   snapshot: snapshot,
+                                  context: context,
                                   path: "Mobile",
                                   icon: const Icon(Icons.call)),
                               _listTile(
                                   snapshot: snapshot,
+                                  context: context,
                                   path: "address",
                                   icon: const Icon(Icons.location_on)),
                               _listTile(
                                   snapshot: snapshot,
                                   path: "gender",
+                                  context: context,
                                   icon: const Icon(Icons.person_pin_rounded)),
                               Common.updateButton(
                                   text: "Edit profile",
@@ -99,13 +89,8 @@ class _ChatAppScreenState extends State<ChatAppScreen> {
                                         .child('email')
                                         .value
                                         .toString();
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => AddPost(
-                                                path: userEmail,
-                                              )),
-                                    );
+                                    Get.toNamed(NameRoutes.addPostScreen,
+                                        arguments: userEmail);
                                   },
                                   textcolor: Colors.white),
                             ],
@@ -120,12 +105,8 @@ class _ChatAppScreenState extends State<ChatAppScreen> {
             actions: [
               GestureDetector(
                   onTap: () {
-                    _chatAppController.signOut();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>  LoginScreen()),
-                    );
+                    controller.signOut();
+                    Get.toNamed(NameRoutes.logInScreen);
                   },
                   child: const Icon(Icons.logout)),
             ],
@@ -139,7 +120,7 @@ class _ChatAppScreenState extends State<ChatAppScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Common.custumtextfield(
-                    controller: _chatAppController.searchController,
+                    controller: controller.searchController,
                     text: "Search",
                     prefixIcon: const Icon(Icons.search),
                     bordercolor: Colors.black,
@@ -149,7 +130,7 @@ class _ChatAppScreenState extends State<ChatAppScreen> {
                 ),
                 Common.updateButton(
                   onTap: () {
-                    _chatAppController.onSearch();
+                    controller.onSearch();
                   },
                   text: "Update",
                   color: Colors.blue.shade300,
@@ -157,11 +138,11 @@ class _ChatAppScreenState extends State<ChatAppScreen> {
                 const SizedBox(
                   height: 20,
                 ),
-                _chatAppController.userMap != null
+                controller.userMap != null
                     ? ListTile(
-                        title: Text("${_chatAppController.userMap?["email"]}"),
+                        title: Text("${controller.userMap?["email"]}"),
                         subtitle:
-                            Text("${_chatAppController.userMap?["Mobile"]}"),
+                            Text("${controller.userMap?["Mobile"]}"),
                         leading: const Icon(
                           Icons.account_box,
                           color: Colors.red,
@@ -178,7 +159,7 @@ class _ChatAppScreenState extends State<ChatAppScreen> {
   }
 
   Widget _listTile(
-      {DataSnapshot? snapshot, required String path, Widget? icon}) {
+      {DataSnapshot? snapshot, required String path, Widget? icon,required BuildContext context}) {
     return ListTile(
       leading: icon,
       title: Text(" ${snapshot?.child(path).value.toString()}"),

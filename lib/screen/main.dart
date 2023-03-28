@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled5/routes/page_routes.dart';
 import 'package:untitled5/screen/chatapp_screen.dart';
+import '../routes/name_routes.dart';
 import 'loginscreen.dart';
 import '../notification_service/notification_service.dart';
 
@@ -97,9 +98,9 @@ class _MyHomePageState extends State<MyHomePage> {
     bool isLogin = shareP.getBool("login") ?? false;
     Timer(Duration(seconds: 2), () {
       if (isLogin) {
-       Get.off(ChatAppScreen());
+       Get.offNamed(NameRoutes.chatAppScreen);
       } else {
-        Get.off( LoginScreen());
+        Get.offNamed(NameRoutes.logInScreen);
       }
     });
   }

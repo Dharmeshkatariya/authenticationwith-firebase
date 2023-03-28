@@ -6,27 +6,14 @@ import 'package:untitled5/common.dart';
 import 'package:untitled5/controller/addpost_controller.dart';
 import 'package:untitled5/utils/utills.dart';
 
-class AddPost extends StatefulWidget {
-  const AddPost({super.key, required this.path});
+class AddPost extends GetView<AddPostController> {
+  AddPost({super.key, required this.path});
 
   final String path;
 
   @override
-  State<AddPost> createState() => _AddPostState();
-}
-
-class _AddPostState extends State<AddPost> {
-  final _addPostController = Get.put(AddPostController());
-
-  @override
-  void initState() {
-    _addPostController.setValue(widget.path);
-    // TODO: implement initState
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    controller.setValue(path);
     return Scaffold(
         body: Obx(
       () => SafeArea(
@@ -38,7 +25,7 @@ class _AddPostState extends State<AddPost> {
               color: Colors.orange,
               child: Column(
                 children: [
-                  _editRow(),
+                  _editRow(context),
                 ],
               ),
             ),
@@ -61,7 +48,7 @@ class _AddPostState extends State<AddPost> {
     ));
   }
 
-  Widget _editRow() {
+  Widget _editRow(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -79,16 +66,16 @@ class _AddPostState extends State<AddPost> {
 
   Widget _column() {
     return Form(
-      key: _addPostController.form,
+      key: controller.form,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Center(
             child: GestureDetector(
               onTap: () {
-                _addPostController.getImageGallery();
+                controller.getImageGallery();
               },
-              child: _addPostController.loading.value
+              child: controller.loading.value
                   ? const CircularProgressIndicator()
                   : Container(
                       color: Colors.blue.shade50,
@@ -96,17 +83,16 @@ class _AddPostState extends State<AddPost> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 90, vertical: 10),
                       margin: const EdgeInsets.symmetric(vertical: 12),
-                      child: _addPostController.imagePath.value.isNotEmpty
+                      child: controller.imagePath.value.isNotEmpty
                           ? ClipRRect(
                               borderRadius: BorderRadius.circular(50),
-                              child: Image.file(
-                                  File(_addPostController.imagePath.value)))
-                          : _addPostController.selectedImage.value.isEmpty
+                              child:
+                                  Image.file(File(controller.imagePath.value)))
+                          : controller.selectedImage.value.isEmpty
                               ? const CircularProgressIndicator(
                                   strokeWidth: 6,
                                 )
-                              : Image.network(
-                                  _addPostController.selectedImage.value),
+                              : Image.network(controller.selectedImage.value),
                     ),
             ),
           ),
@@ -116,9 +102,9 @@ class _AddPostState extends State<AddPost> {
           ),
           _textField(
               text: "Full name",
-              controller: _addPostController.nameController,
+              controller: controller.nameController,
               validator: (value) {
-                if (_addPostController.nameController.value.text.isEmpty) {
+                if (controller.nameController.value.text.isEmpty) {
                   return 'Name is required';
                 }
               }),
@@ -131,13 +117,13 @@ class _AddPostState extends State<AddPost> {
           ),
           _textField(
             text: "Email",
-            controller: _addPostController.emailController,
+            controller: controller.emailController,
             validator: (value) {
-              if (_addPostController.emailController.value.text.isEmpty) {
+              if (controller.emailController.value.text.isEmpty) {
                 return 'Email is required';
               }
               if (!RegExp(r'\S+@\S+\.\S+')
-                  .hasMatch(_addPostController.emailController.value.text)) {
+                  .hasMatch(controller.emailController.value.text)) {
                 return "Please enter a valid email address";
               }
               return null;
@@ -152,9 +138,9 @@ class _AddPostState extends State<AddPost> {
           ),
           _textField(
             text: "Mobile",
-            controller: _addPostController.mobileController,
+            controller: controller.mobileController,
             validator: (value) {
-              if (_addPostController.mobileController.value.text.isEmpty) {
+              if (controller.mobileController.value.text.isEmpty) {
                 return 'Mobile is required';
               }
             },
@@ -180,10 +166,10 @@ class _AddPostState extends State<AddPost> {
           ),
           _textField(
             text: "Address",
-            controller: _addPostController.addressController,
+            controller: controller.addressController,
             maxline: 4,
             validator: (value) {
-              if (_addPostController.addressController.value.text.isEmpty) {
+              if (controller.addressController.value.text.isEmpty) {
                 return 'Address is required';
               }
             },
@@ -192,17 +178,17 @@ class _AddPostState extends State<AddPost> {
             height: 30,
           ),
           Common.updateButton(
-              loading: _addPostController.loading.value,
+              loading: controller.loading.value,
               text: "Update",
               textcolor: Colors.white,
               color: Colors.black87,
               onTap: () {
-                if (_addPostController.imagePath.value.isEmpty &&
-                    _addPostController.selectedImage.value.isEmpty) {
+                if (controller.imagePath.value.isEmpty &&
+                    controller.selectedImage.value.isEmpty) {
                   Utils.toastMessage("select image");
-                } else if (_addPostController.form.currentState!.validate()) {
-                  _addPostController.loading.value = true;
-                  _addPostController.imageUpdate();
+                } else if (controller.form.currentState!.validate()) {
+                  controller.loading.value = true;
+                  controller.imageUpdate();
                 }
               })
         ],
@@ -219,16 +205,16 @@ class _AddPostState extends State<AddPost> {
         ),
       ),
       isExpanded: true,
-      hint: _addPostController.genderValue.value.isNotEmpty
+      hint: controller.genderValue.value.isNotEmpty
           ? Text(
-              _addPostController.genderValue.value,
+              controller.genderValue.value,
               style: const TextStyle(fontSize: 14),
             )
           : const Text(
               "Select the gender",
               style: TextStyle(fontSize: 14),
             ),
-      items: _addPostController.genderItems
+      items: controller.genderItems
           .map((item) => DropdownMenuItem(
                 value: item,
                 child: Text(
@@ -246,10 +232,10 @@ class _AddPostState extends State<AddPost> {
         return null;
       },
       onChanged: (value) {
-        _addPostController.selectedGenderValue.value = value.toString();
+        controller.selectedGenderValue.value = value.toString();
       },
       onSaved: (value) {
-        _addPostController.selectedGenderValue.value = value.toString();
+        controller.selectedGenderValue.value = value.toString();
       },
       buttonStyleData: const ButtonStyleData(
         height: 30,

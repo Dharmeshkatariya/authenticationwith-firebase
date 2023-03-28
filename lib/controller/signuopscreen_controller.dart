@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled5/screen/loginscreen.dart';
 
+import '../routes/name_routes.dart';
 import '../utils/utills.dart';
 
 class SignUpScreenController extends GetxController {
@@ -33,7 +34,7 @@ class SignUpScreenController extends GetxController {
         "Mobile": mobileController.value.text,
         "password": passController.value.text,
       });
-      Get.to(LoginScreen());
+      Get.toNamed(NameRoutes.logInScreen);
     }
   }
 

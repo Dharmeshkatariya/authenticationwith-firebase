@@ -4,10 +4,8 @@ import 'package:get/get.dart';
 import 'package:untitled5/common.dart';
 import 'package:untitled5/controller/mobileverification_controller.dart';
 
-class MobileScreen extends StatelessWidget {
+class MobileScreen extends GetView<MobileScreenController> {
   MobileScreen({Key? key}) : super(key: key);
-
-  final _mobileScreenController = Get.put(MobileScreenController());
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +15,7 @@ class MobileScreen extends StatelessWidget {
         child: Container(
           color: Colors.deepPurple,
           child: Form(
-            key: _mobileScreenController.form,
+            key: controller.form,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -25,7 +23,7 @@ class MobileScreen extends StatelessWidget {
                   bordercolor: Colors.black,
                   color: Colors.white,
                   hintcolor: Colors.white,
-                  controller: _mobileScreenController.mobileController,
+                  controller: controller.mobileController,
                   fillColor: Colors.deepPurple,
                   text: "Phone",
                   prefixIcon: const Icon(
@@ -37,13 +35,12 @@ class MobileScreen extends StatelessWidget {
                   height: 20,
                 ),
                 Common.container(
-                    loading: _mobileScreenController.loading.value,
+                    loading: controller.loading.value,
                     text: "Sign Up",
                     onTap: () {
-                      if (_mobileScreenController.form.currentState!
-                          .validate()) {
-                        _mobileScreenController.loading.value = true;
-                        _mobileScreenController.mobileVerified();
+                      if (controller.form.currentState!.validate()) {
+                        controller.loading.value = true;
+                        controller.mobileVerified();
                       }
                     }),
               ],

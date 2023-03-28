@@ -4,10 +4,8 @@ import 'package:untitled5/common.dart';
 import 'package:untitled5/screen/database/Postvisible.dart';
 import '../../controller/addfirstore_controller.dart';
 
-class AddFirestoreData extends StatelessWidget {
+class AddFirestoreData extends GetView<AddFireStoreController> {
   AddFirestoreData({Key? key}) : super(key: key);
-
-  final _fireStoreController = Get.put(AddFireStoreController());
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +25,7 @@ class AddFirestoreData extends StatelessWidget {
                   bordercolor: Colors.black,
                   text: "Add post",
                   maxline: 4,
-                  controller: _fireStoreController.postController,
+                  controller: controller.postController,
                   fillColor: Colors.white,
                 ),
                 const SizedBox(
@@ -36,11 +34,11 @@ class AddFirestoreData extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Common.updateButton(
-                      loading: _fireStoreController.loading.value,
+                      loading: controller.loading.value,
                       onTap: () {
-                        _fireStoreController.loading.value = true;
-                        _fireStoreController.fireStoreData();
-                        _fireStoreController.loading.value = false;
+                        controller.loading.value = true;
+                        controller.fireStoreData();
+                        controller.loading.value = false;
                         Get.to(PostVisibleScreen());
                       },
                       text: "Add Post ",

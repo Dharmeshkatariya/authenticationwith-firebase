@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:untitled5/routes/name_routes.dart';
 import 'package:untitled5/screen/chatapp_screen.dart';
 
 import '../utils/utills.dart';
@@ -29,7 +30,7 @@ class LoginScreenController extends GetxController{
       shareP.setBool("login", true);
       shareP.setString("pass", passController.value.text);
        loading.value = false;
-        Get.to(ChatAppScreen());
+       Get.toNamed(NameRoutes.chatAppScreen);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
       } else if (e.code == 'wrong-password') {}
