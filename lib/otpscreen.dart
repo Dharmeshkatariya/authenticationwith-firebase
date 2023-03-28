@@ -49,10 +49,7 @@ class OtpScreen extends StatelessWidget{
                     onTap: () {
                       _otpScreenController.loading.value = true;
                       _otpScreenController.verifyOTPCode();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const ChatAppScreen()),
-                      );
+                    Get.to(ChatAppScreen());
                     }),
               ],
             ),

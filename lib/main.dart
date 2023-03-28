@@ -94,19 +94,9 @@ class _MyHomePageState extends State<MyHomePage> {
     bool isLogin = shareP.getBool("login") ?? false;
     Timer(Duration(seconds: 2), () {
       if (isLogin) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (BuildContext context) => const ChatAppScreen(),
-          ),
-        );
+       Get.off(ChatAppScreen());
       } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (BuildContext context) =>  LoginScreen(),
-          ),
-        );
+        Get.off( LoginScreen());
       }
     });
   }
