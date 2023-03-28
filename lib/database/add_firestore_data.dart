@@ -17,7 +17,7 @@ class AddFirestoreData extends StatelessWidget {
         backgroundColor: Colors.orange,
         title: const Text("Add post"),
       ),
-      body: Container(
+      body: Obx(()=> Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         color: Colors.cyan.shade50,
         child: Column(
@@ -48,7 +48,7 @@ class AddFirestoreData extends StatelessWidget {
             )
           ],
         ),
-      ),
+      ),)
     );
   }
 }
