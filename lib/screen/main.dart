@@ -5,9 +5,10 @@ import 'package:firebase_phone_auth_handler/firebase_phone_auth_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:untitled5/chatapp_screen.dart';
+import 'package:untitled5/routes/page_routes.dart';
+import 'package:untitled5/screen/chatapp_screen.dart';
 import 'loginscreen.dart';
-import 'notification_service/notification_service.dart';
+import '../notification_service/notification_service.dart';
 
 @pragma("vm-entry point")
 Future<void> backgroundHandlerMessage(RemoteMessage message) async {
@@ -31,12 +32,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return FirebasePhoneAuthProvider(
       child: GetMaterialApp(
+
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
         home: const MyHomePage(title: 'Flutter Demo Home Page'),
+        getPages: PageRoutes.pages,
       ),
     );
   }

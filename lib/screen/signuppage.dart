@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:untitled5/common.dart';
-import 'package:untitled5/signupscreen.dart';
+import 'package:untitled5/screen/signupscreen.dart';
 
 import 'mobileverification.dart';
 

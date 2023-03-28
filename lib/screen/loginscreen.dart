@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:untitled5/common.dart';
 import 'package:untitled5/controller/loginscreen_controller.dart';
-import 'package:untitled5/signuppage.dart';
+import 'package:untitled5/screen/signuppage.dart';
 import 'forgetpassword.dart';
 
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends GetView<LoginScreenController> {
    LoginScreen({Key? key}) : super(key: key);
 
-  final _loginScreenController =  Get.put(LoginScreenController());
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +56,7 @@ class LoginScreen extends StatelessWidget {
                           Icons.email,
                           color: Colors.white,
                         ),
-                        controller: _loginScreenController.emailController,
+                        controller: controller.emailController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Email is required';
@@ -77,7 +76,7 @@ class LoginScreen extends StatelessWidget {
                           Icons.remove_red_eye_outlined,
                           color: Colors.white,
                         ),
-                        controller: _loginScreenController.passController,
+                        controller: controller.passController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Password is required';
@@ -86,11 +85,11 @@ class LoginScreen extends StatelessWidget {
                       ),
                       Common.container(
                           text: "Login",
-                          loading: _loginScreenController.loading.value,
+                          loading: controller.loading.value,
                           onTap: () {
                             if (form1.currentState!.validate()) {
-                              _loginScreenController.loading.value = true;
-                              _loginScreenController.userLogin();
+                              controller.loading.value = true;
+                              controller.userLogin();
                             }
                           }),
                       GestureDetector(

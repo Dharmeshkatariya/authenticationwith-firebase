@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../common.dart';
-import '../otpscreen.dart';
+import '../routes/name_routes.dart';
 import '../utils/utills.dart';
 
 class MobileScreenController extends GetxController{
@@ -33,7 +33,7 @@ class MobileScreenController extends GetxController{
           var shareP = await SharedPreferences.getInstance();
           shareP.setString("receive", receivedID);
           loading.value = false;
-          Get.to(OtpScreen());
+          Get.toNamed(NameRoutes.otpScreen);
         },
         codeAutoRetrievalTimeout: (String verificationId) {
         },

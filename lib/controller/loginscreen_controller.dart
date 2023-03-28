@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:untitled5/chatapp_screen.dart';
+import 'package:untitled5/screen/chatapp_screen.dart';
 
 import '../utils/utills.dart';
 

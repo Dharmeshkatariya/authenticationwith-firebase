@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:untitled5/common.dart';
-import 'package:untitled5/database/Postvisible.dart';
-import '../controller/addfirstore_controller.dart';
+import 'package:untitled5/screen/database/Postvisible.dart';
+import '../../controller/addfirstore_controller.dart';
 
 class AddFirestoreData extends StatelessWidget {
   AddFirestoreData({Key? key}) : super(key: key);

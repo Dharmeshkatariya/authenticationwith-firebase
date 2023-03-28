@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:untitled5/loginscreen.dart';
+import 'package:untitled5/screen/loginscreen.dart';
 
 import '../utils/utills.dart';
 

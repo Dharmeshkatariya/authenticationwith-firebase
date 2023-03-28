@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:untitled5/common.dart';
-import 'package:untitled5/chatapp_screen.dart';
+import 'package:untitled5/screen/chatapp_screen.dart';
 import 'package:untitled5/controller/otpscreen_controller.dart';
 
 class OtpScreen extends GetView<OtpScreenController>{
