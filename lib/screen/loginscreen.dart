@@ -5,16 +5,15 @@ import 'package:untitled5/controller/loginscreen_controller.dart';
 import 'package:untitled5/screen/signuppage.dart';
 import 'forgetpassword.dart';
 
-
 class LoginScreen extends GetView<LoginScreenController> {
-   LoginScreen({Key? key}) : super(key: key);
-
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final form1 = GlobalKey<FormState>();
     return Scaffold(
-      body: Obx(()=> Container(
+        body: Obx(
+      () => Container(
         color: Colors.deepPurple,
         child: Column(
           children: [
@@ -23,7 +22,6 @@ class LoginScreen extends GetView<LoginScreenController> {
                 child: Container(
                   color: Colors.deepPurple,
                 )),
-
             Expanded(
               flex: 2,
               child: Container(
@@ -36,7 +34,7 @@ class LoginScreen extends GetView<LoginScreenController> {
                       topLeft: Radius.circular(70),
                     )),
                 child: Form(
-                  key:form1,
+                  key: form1,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -128,7 +126,7 @@ class LoginScreen extends GetView<LoginScreenController> {
             ),
           ],
         ),
-      ),)
-    );
+      ),
+    ));
   }
 }

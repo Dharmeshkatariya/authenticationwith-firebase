@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -29,7 +28,19 @@ class AddPostController extends GetxController {
   RxBool loading = false.obs;
   final form = GlobalKey<FormState>();
 
-  setValue(String path) async {
+  @override
+  void onInit() {
+    if (Get.arguments != null) {
+      var userEmail = Get.arguments['path'];
+      if (userEmail != null && userEmail.toString().isNotEmpty) {
+        _setValue(userEmail);
+      }
+    }
+
+    super.onInit();
+  }
+
+  _setValue(String path) async {
     updateEmail.value = path.toString();
     var arrayEmail = updateEmail.value.split("@");
     DatabaseReference starCountRef =
@@ -41,8 +52,8 @@ class AddPostController extends GetxController {
       emailController.text = updateEmail.value;
       mobileController.text = user['Mobile'];
       addressController.text = user['address'];
-      selectedImage = user["userimage"];
-      genderValue = user["gender"];
+      selectedImage.value = user["userimage"];
+      genderValue.value = user["gender"];
     });
   }
 

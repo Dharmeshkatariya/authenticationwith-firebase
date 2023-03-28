@@ -36,7 +36,7 @@ class PageRoutes{
     ),
     GetPage(
       name: NameRoutes.addPostScreen,
-      page: ()=>AddPost(path: '',),
+      page: ()=>AddPost(),
       binding: AddPostBinding(),
     ),
     GetPage(

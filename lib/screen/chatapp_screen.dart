@@ -6,8 +6,8 @@ import 'package:untitled5/common.dart';
 import 'package:untitled5/controller/chatapp_controller.dart';
 import '../routes/name_routes.dart';
 
-class ChatAppScreen extends GetView<ChatAppController>{
-   ChatAppScreen({Key? key}) : super(key: key);
+class ChatAppScreen extends GetView<ChatAppController> {
+  ChatAppScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class ChatAppScreen extends GetView<ChatAppController>{
           floatingActionButton: FloatingActionButton(
               backgroundColor: Colors.orange,
               onPressed: () {
-               Get.toNamed(NameRoutes.addFireStoreScreen);
+                Get.toNamed(NameRoutes.addFireStoreScreen);
               },
               child: const Icon(Icons.add)),
           drawerScrimColor: Colors.white,
@@ -39,7 +39,12 @@ class ChatAppScreen extends GetView<ChatAppController>{
                                 fit: BoxFit.cover,
                               ),
                             )
-                          : Container()
+                          : Container(),
+                      IconButton(
+                          onPressed: () {
+                            Get.toNamed(NameRoutes.addPostScreen);
+                          },
+                          icon: const Icon(Icons.more_vert))
                     ],
                   ),
                 ),
@@ -89,8 +94,10 @@ class ChatAppScreen extends GetView<ChatAppController>{
                                         .child('email')
                                         .value
                                         .toString();
-                                    Get.toNamed(NameRoutes.addPostScreen,
-                                        arguments: userEmail);
+                                    Get.toNamed(
+                                      NameRoutes.addPostScreen,
+                                      arguments: {'path': userEmail},
+                                    );
                                   },
                                   textcolor: Colors.white),
                             ],
@@ -141,8 +148,7 @@ class ChatAppScreen extends GetView<ChatAppController>{
                 controller.userMap != null
                     ? ListTile(
                         title: Text("${controller.userMap?["email"]}"),
-                        subtitle:
-                            Text("${controller.userMap?["Mobile"]}"),
+                        subtitle: Text("${controller.userMap?["Mobile"]}"),
                         leading: const Icon(
                           Icons.account_box,
                           color: Colors.red,
@@ -159,7 +165,10 @@ class ChatAppScreen extends GetView<ChatAppController>{
   }
 
   Widget _listTile(
-      {DataSnapshot? snapshot, required String path, Widget? icon,required BuildContext context}) {
+      {DataSnapshot? snapshot,
+      required String path,
+      Widget? icon,
+      required BuildContext context}) {
     return ListTile(
       leading: icon,
       title: Text(" ${snapshot?.child(path).value.toString()}"),

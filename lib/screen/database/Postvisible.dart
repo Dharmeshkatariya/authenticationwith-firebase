@@ -5,8 +5,7 @@ class PostVisibleScreen extends StatelessWidget {
    PostVisibleScreen({Key? key}) : super(key: key);
 
   final fireStore = FirebaseFirestore.instance.collection("Users").snapshots();
-
-  final fireStoreCollection = FirebaseFirestore.instance.collection("");
+  final fireStoreCollection = FirebaseFirestore.instance.collection("Users");
 
   @override
   Widget build(BuildContext context) {

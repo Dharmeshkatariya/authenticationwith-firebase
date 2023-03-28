@@ -7,13 +7,10 @@ import 'package:untitled5/controller/addpost_controller.dart';
 import 'package:untitled5/utils/utills.dart';
 
 class AddPost extends GetView<AddPostController> {
-  AddPost({super.key, required this.path});
-
-  final String path;
+  AddPost({super.key, });
 
   @override
   Widget build(BuildContext context) {
-    controller.setValue(path);
     return Scaffold(
         body: Obx(
       () => SafeArea(
@@ -89,10 +86,7 @@ class AddPost extends GetView<AddPostController> {
                               child:
                                   Image.file(File(controller.imagePath.value)))
                           : controller.selectedImage.value.isEmpty
-                              ? const CircularProgressIndicator(
-                                  strokeWidth: 6,
-                                )
-                              : Image.network(controller.selectedImage.value),
+                              ? const CircularProgressIndicator(strokeWidth: 6,) : Image.network(controller.selectedImage.value),
                     ),
             ),
           ),
