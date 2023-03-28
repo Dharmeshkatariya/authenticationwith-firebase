@@ -4,10 +4,9 @@ import 'package:untitled5/common.dart';
 import 'package:untitled5/chatapp_screen.dart';
 import 'package:untitled5/controller/otpscreen_controller.dart';
 
-class OtpScreen extends StatelessWidget{
+class OtpScreen extends GetView<OtpScreenController>{
    OtpScreen({Key? key}) : super(key: key);
 
-  final _otpScreenController = Get.put(OtpScreenController());
 
   @override
   Widget build(BuildContext context) {
@@ -35,20 +34,20 @@ class OtpScreen extends StatelessWidget{
                     hintcolor: Colors.white,
                     color: Colors.white,
                     bordercolor: Colors.white,
-                    controller: _otpScreenController.otpController,
+                    controller: controller.otpController,
                     text: "",
                     fillColor: Colors.blue.shade300),
                 const SizedBox(
                   height: 20,
                 ),
                 Common.updateButton(
-                    loading: _otpScreenController.loading.value,
+                    loading: controller.loading.value,
                     color: Colors.orange.shade200,
                     textcolor: Colors.black,
                     text: "Verify now",
                     onTap: () {
-                      _otpScreenController.loading.value = true;
-                      _otpScreenController.verifyOTPCode();
+                      controller.loading.value = true;
+                      controller.verifyOTPCode();
                     Get.to(ChatAppScreen());
                     }),
               ],
