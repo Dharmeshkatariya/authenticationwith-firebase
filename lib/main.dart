@@ -4,7 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_phone_auth_handler/firebase_phone_auth_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:untitled5/logoutscreen.dart';
+import 'package:untitled5/chatapp_screen.dart';
 import 'loginscreen.dart';
 import 'notification_service/notification_service.dart';
 
@@ -96,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (BuildContext context) => const LogoutScreen(),
+            builder: (BuildContext context) => const ChatAppScreen(),
           ),
         );
       } else {

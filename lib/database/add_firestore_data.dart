@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled5/common.dart';
+import 'package:untitled5/database/Postvisible.dart';
 import 'package:untitled5/utils/utills.dart';
 
 class AddFirestoreData extends StatefulWidget {
@@ -47,8 +48,11 @@ class _AddFirestoreDataState extends State<AddFirestoreData> {
                       loading = true;
                     });
                     _fireStoreData();
-
                     loading = false;
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const PostVisibleScreen()),
+                    );
                   },
                   text: "Add Post ",
                   color: Colors.white,

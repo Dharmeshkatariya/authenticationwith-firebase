@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _passController = TextEditingController();
   final _emailController = TextEditingController();
   final databaseRef = FirebaseDatabase.instance.ref("User");
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  FirebaseFirestore fireStore = FirebaseFirestore.instance;
   bool isChecked = false;
   bool loading = false;
 
@@ -31,7 +34,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         child: Column(
           children: [
             Container(
-              height: 80,
+              height: 40,
               color: Colors.black,
             ),
             Expanded(
@@ -187,10 +190,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
   _databaseProfile() {
+
     if (_nameController.text.isNotEmpty &&
         _emailController.text.isNotEmpty &&
         _mobileController.text.isNotEmpty &&
         _passController.text.isNotEmpty) {
+  
+
+
       String email = _emailController.text;
       var strEmail = email.split("@");
       databaseRef.child(strEmail[0]).set({

@@ -6,7 +6,7 @@ import 'package:untitled5/signuppage.dart';
 import 'package:untitled5/utils/utills.dart';
 
 import 'forgetpassword.dart';
-import 'logoutscreen.dart';
+import 'chatapp_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -172,7 +172,7 @@ class _LoginScreenState extends State<LoginScreen> {
       });
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const LogoutScreen()),
+        MaterialPageRoute(builder: (context) => const ChatAppScreen()),
       );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {

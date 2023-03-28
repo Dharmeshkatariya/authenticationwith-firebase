@@ -89,7 +89,7 @@ class _MobileScreenState extends State<MobileScreen> {
         });
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const OtpScreen()),
+          MaterialPageRoute(builder: (context) =>  OtpScreen()),
         );
       },
       codeAutoRetrievalTimeout: (String verificationId) {
