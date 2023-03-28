@@ -31,11 +31,7 @@ class _ChatAppScreenState extends State<ChatAppScreen> {
           floatingActionButton: FloatingActionButton(
               backgroundColor: Colors.orange,
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>  AddFirestoreData()),
-                );
+              Get.to(AddFirestoreData());
               },
               child: const Icon(Icons.add)),
           drawerScrimColor: Colors.white,

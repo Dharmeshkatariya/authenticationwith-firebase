@@ -10,6 +10,8 @@ class SignUpScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final formSignUp = GlobalKey<FormState>();
+
     return Scaffold(
       body: Container(
         color: Colors.black87,
@@ -30,7 +32,7 @@ class SignUpScreen extends StatelessWidget {
                       topRight: Radius.circular(50),
                     )),
                 child: Form(
-                  key: _signScreenController.formSignUp,
+                  key: formSignUp,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -112,7 +114,7 @@ class SignUpScreen extends StatelessWidget {
                           loading: _signScreenController.loading.value,
                           text: "Sign Up",
                           onTap: () {
-                            if (_signScreenController.formSignUp.currentState!
+                            if (formSignUp.currentState!
                                 .validate()) {
                               _signScreenController.createUser();
                               _signScreenController.databaseProfile();

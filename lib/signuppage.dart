@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:untitled5/common.dart';
 import 'package:untitled5/signupscreen.dart';
 
+import 'mobileverification.dart';
+
 class SignPage extends StatelessWidget {
   const SignPage({Key? key}) : super(key: key);
 
@@ -26,7 +28,7 @@ class SignPage extends StatelessWidget {
               Common.container(
                   text: "Sign up with phone",
                   onTap: () {
-
+                    Get.to(MobileScreen());
                   }),
             ],
           ),

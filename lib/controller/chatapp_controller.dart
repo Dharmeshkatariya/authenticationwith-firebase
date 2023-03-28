@@ -23,8 +23,9 @@ class ChatAppController extends GetxController{
     starCountRef.onValue.listen((DatabaseEvent event) {
       Object? data = event.snapshot.value;
       var user = data as Map;
-      networkImage.value = user['userimage'];
-    });
+       if(userMap?.length == 5) {
+         networkImage.value = user["userImage"];
+       }});
   }
 
   onSearch() async {

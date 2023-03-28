@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled5/loginscreen.dart';
@@ -11,7 +12,6 @@ import '../utils/utills.dart';
 class SignUpScreenController extends GetxController {
   RxBool isChecked = false.obs;
   RxBool loading = false.obs;
-  final formSignUp = GlobalKey<FormState>();
   final nameController = TextEditingController();
   final mobileController = TextEditingController();
   final passController = TextEditingController();
@@ -45,8 +45,8 @@ class SignUpScreenController extends GetxController {
         email: emailController.value.text,
         password: passController.value.text,
       )
-          .then((value) => Utils.toastMessage(value.toString()))
-          .onError((error, stackTrace) => Utils.toastMessage(error.toString()));
+          .then((value) => Get.snackbar("signup", "successfully",backgroundColor: Colors.orange))
+          .onError((error, stackTrace) => Get.snackbar("signup", "$error",backgroundColor: Colors.orange));
       var shareP = await SharedPreferences.getInstance();
       shareP.setString("email", emailController.value.text);
       shareP.setString("pass", passController.value.text);
@@ -55,6 +55,7 @@ class SignUpScreenController extends GetxController {
       } else if (e.code == 'email-already-in-use') {
       }
     } catch (e) {
+      print(e);
     }
   }
 }

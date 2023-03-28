@@ -10,7 +10,6 @@ class LoginScreenController extends GetxController{
 
   final emailController = TextEditingController();
   final passController = TextEditingController();
-  final form1 = GlobalKey<FormState>();
   RxBool loading = false.obs;
 
 
@@ -34,6 +33,8 @@ class LoginScreenController extends GetxController{
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
       } else if (e.code == 'wrong-password') {}
+    }catch(e){
+      print(e);
     }
   }
 }

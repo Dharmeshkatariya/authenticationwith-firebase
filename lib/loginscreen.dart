@@ -13,6 +13,7 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final form1 = GlobalKey<FormState>();
     return Scaffold(
       body: Obx(()=> Container(
         color: Colors.deepPurple,
@@ -36,7 +37,7 @@ class LoginScreen extends StatelessWidget {
                       topLeft: Radius.circular(70),
                     )),
                 child: Form(
-                  key: _loginScreenController.form1,
+                  key:form1,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -87,7 +88,7 @@ class LoginScreen extends StatelessWidget {
                           text: "Login",
                           loading: _loginScreenController.loading.value,
                           onTap: () {
-                            if (_loginScreenController.form1.currentState!.validate()) {
+                            if (form1.currentState!.validate()) {
                               _loginScreenController.loading.value = true;
                               _loginScreenController.userLogin();
                             }
