@@ -1,20 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:untitled5/common.dart';
 import 'package:untitled5/database/Postvisible.dart';
-import 'package:untitled5/utils/utills.dart';
+import '../controller/addfirstore_controller.dart';
 
-class AddFirestoreData extends StatefulWidget {
-  const AddFirestoreData({Key? key}) : super(key: key);
+class AddFirestoreData extends StatelessWidget {
+  AddFirestoreData({Key? key}) : super(key: key);
 
-  @override
-  State<AddFirestoreData> createState() => _AddFirestoreDataState();
-}
-
-class _AddFirestoreDataState extends State<AddFirestoreData> {
-  final _postController = TextEditingController();
-  bool loading = false;
-  final fireStore = FirebaseFirestore.instance.collection("Users");
+  final _fireStoreController = Get.put(AddFireStoreController());
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +26,7 @@ class _AddFirestoreDataState extends State<AddFirestoreData> {
               bordercolor: Colors.black,
               text: "Add post",
               maxline: 4,
-              controller: _postController,
+              controller: _fireStoreController.postController,
               fillColor: Colors.white,
             ),
             const SizedBox(
@@ -42,17 +35,12 @@ class _AddFirestoreDataState extends State<AddFirestoreData> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Common.updateButton(
-                  loading: loading,
+                  loading: _fireStoreController.loading.value,
                   onTap: () {
-                    setState(() {
-                      loading = true;
-                    });
-                    _fireStoreData();
-                    loading = false;
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const PostVisibleScreen()),
-                    );
+                    _fireStoreController.loading.value = true;
+                    _fireStoreController.fireStoreData();
+                    _fireStoreController.loading.value = false;
+                    Get.to(PostVisibleScreen());
                   },
                   text: "Add Post ",
                   color: Colors.white,
@@ -62,21 +50,5 @@ class _AddFirestoreDataState extends State<AddFirestoreData> {
         ),
       ),
     );
-  }
-
-  _fireStoreData() {
-    try {
-      String id = DateTime.now().microsecondsSinceEpoch.toString();
-      fireStore
-          .doc(id)
-          .set({"post": _postController.text, "id": id}).then((value) => {
-                Utils.toastMessage("Post added"),
-              });
-    } catch (e) {
-      print(e);
-    }
-    setState(() {
-      loading = false;
-    });
   }
 }

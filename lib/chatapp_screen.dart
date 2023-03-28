@@ -37,7 +37,7 @@ class _ChatAppScreenState extends State<ChatAppScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const AddFirestoreData()),
+                      builder: (context) =>  AddFirestoreData()),
                 );
               },
               child: const Icon(Icons.add)),
@@ -131,7 +131,7 @@ class _ChatAppScreenState extends State<ChatAppScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const LoginScreen()),
+                          builder: (context) =>  LoginScreen()),
                     );
                   },
                   child: const Icon(Icons.logout)),

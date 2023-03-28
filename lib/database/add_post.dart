@@ -1,10 +1,9 @@
 import 'dart:io';
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:get/get.dart';
 import 'package:untitled5/common.dart';
+import 'package:untitled5/controller/addpost_controller.dart';
 import 'package:untitled5/utils/utills.dart';
 
 class AddPost extends StatefulWidget {
@@ -17,56 +16,20 @@ class AddPost extends StatefulWidget {
 }
 
 class _AddPostState extends State<AddPost> {
-  final _nameController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _mobileController = TextEditingController();
-  final _addressController = TextEditingController();
-  final List<String> genderItems = [
-    'Male',
-    'Female',
-    "Other",
-  ];
-  String selectedGenderValue = "";
-  String selectedImage = "";
-  var imagePath = "";
-  String genderValue = "";
-  String updateemail = "";
-  final databaseRef = FirebaseDatabase.instance.ref("User");
-  firebase_storage.FirebaseStorage storage =
-      firebase_storage.FirebaseStorage.instance;
-  bool loading = false;
+  final _addPostController = Get.put(AddPostController());
 
   @override
   void initState() {
-    _setValue();
+    _addPostController.setValue(widget.path);
     // TODO: implement initState
     super.initState();
   }
 
-  _setValue() async {
-    updateemail = widget.path.toString();
-    var arrayEmail = updateemail.split("@");
-    DatabaseReference starCountRef =
-        FirebaseDatabase.instance.ref('User').child(arrayEmail[0]);
-    starCountRef.onValue.listen((DatabaseEvent event) {
-      Object? data = event.snapshot.value;
-      var user = data! as Map;
-      _nameController.text = user['fullName'];
-      _emailController.text = updateemail;
-      _mobileController.text = user['Mobile'];
-      _addressController.text = user['address'];
-      selectedImage = user["userimage"];
-      genderValue = user["gender"];
-      setState(() {});
-    });
-  }
-
-  final _form = GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
+        body: Obx(
+      () => SafeArea(
         child: Column(
           children: [
             Container(
@@ -95,14 +58,7 @@ class _AddPostState extends State<AddPost> {
           ],
         ),
       ),
-    );
-  }
-
-  _getImageGallery() async {
-    final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-    imagePath = image!.path;
-    setState(() {});
+    ));
   }
 
   Widget _editRow() {
@@ -123,16 +79,16 @@ class _AddPostState extends State<AddPost> {
 
   Widget _column() {
     return Form(
-      key: _form,
+      key: _addPostController.form,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Center(
             child: GestureDetector(
               onTap: () {
-                _getImageGallery();
+                _addPostController.getImageGallery();
               },
-              child: loading
+              child: _addPostController.loading.value
                   ? const CircularProgressIndicator()
                   : Container(
                       color: Colors.blue.shade50,
@@ -140,15 +96,17 @@ class _AddPostState extends State<AddPost> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 90, vertical: 10),
                       margin: const EdgeInsets.symmetric(vertical: 12),
-                      child: imagePath.isNotEmpty
+                      child: _addPostController.imagePath.value.isNotEmpty
                           ? ClipRRect(
                               borderRadius: BorderRadius.circular(50),
-                              child: Image.file(File(imagePath)))
-                          : selectedImage.isEmpty
+                              child: Image.file(
+                                  File(_addPostController.imagePath.value)))
+                          : _addPostController.selectedImage.value.isEmpty
                               ? const CircularProgressIndicator(
                                   strokeWidth: 6,
                                 )
-                              : Image.network(selectedImage),
+                              : Image.network(
+                                  _addPostController.selectedImage.value),
                     ),
             ),
           ),
@@ -158,9 +116,9 @@ class _AddPostState extends State<AddPost> {
           ),
           _textField(
               text: "Full name",
-              controller: _nameController,
+              controller: _addPostController.nameController,
               validator: (value) {
-                if (_nameController.text.isEmpty) {
+                if (_addPostController.nameController.value.text.isEmpty) {
                   return 'Name is required';
                 }
               }),
@@ -173,12 +131,13 @@ class _AddPostState extends State<AddPost> {
           ),
           _textField(
             text: "Email",
-            controller: _emailController,
+            controller: _addPostController.emailController,
             validator: (value) {
-              if (_emailController.text.isEmpty) {
+              if (_addPostController.emailController.value.text.isEmpty) {
                 return 'Email is required';
               }
-              if (!RegExp(r'\S+@\S+\.\S+').hasMatch(_emailController.text)) {
+              if (!RegExp(r'\S+@\S+\.\S+')
+                  .hasMatch(_addPostController.emailController.value.text)) {
                 return "Please enter a valid email address";
               }
               return null;
@@ -193,9 +152,9 @@ class _AddPostState extends State<AddPost> {
           ),
           _textField(
             text: "Mobile",
-            controller: _mobileController,
+            controller: _addPostController.mobileController,
             validator: (value) {
-              if (_mobileController.text.isEmpty) {
+              if (_addPostController.mobileController.value.text.isEmpty) {
                 return 'Mobile is required';
               }
             },
@@ -221,10 +180,10 @@ class _AddPostState extends State<AddPost> {
           ),
           _textField(
             text: "Address",
-            controller: _addressController,
+            controller: _addPostController.addressController,
             maxline: 4,
             validator: (value) {
-              if (_addressController.text.isEmpty) {
+              if (_addPostController.addressController.value.text.isEmpty) {
                 return 'Address is required';
               }
             },
@@ -233,18 +192,17 @@ class _AddPostState extends State<AddPost> {
             height: 30,
           ),
           Common.updateButton(
-              loading: loading,
+              loading: _addPostController.loading.value,
               text: "Update",
               textcolor: Colors.white,
               color: Colors.black87,
               onTap: () {
-                if (imagePath.isEmpty && selectedImage.isEmpty) {
+                if (_addPostController.imagePath.value.isEmpty &&
+                    _addPostController.selectedImage.value.isEmpty) {
                   Utils.toastMessage("select image");
-                } else if (_form.currentState!.validate()) {
-                  setState(() {
-                    loading = true;
-                  });
-                  _imageUpdate();
+                } else if (_addPostController.form.currentState!.validate()) {
+                  _addPostController.loading.value = true;
+                  _addPostController.imageUpdate();
                 }
               })
         ],
@@ -261,16 +219,16 @@ class _AddPostState extends State<AddPost> {
         ),
       ),
       isExpanded: true,
-      hint: genderValue.isNotEmpty
+      hint: _addPostController.genderValue.value.isNotEmpty
           ? Text(
-              genderValue,
+              _addPostController.genderValue.value,
               style: const TextStyle(fontSize: 14),
             )
           : const Text(
               "Select the gender",
               style: TextStyle(fontSize: 14),
             ),
-      items: genderItems
+      items: _addPostController.genderItems
           .map((item) => DropdownMenuItem(
                 value: item,
                 child: Text(
@@ -288,10 +246,10 @@ class _AddPostState extends State<AddPost> {
         return null;
       },
       onChanged: (value) {
-        selectedGenderValue = value.toString();
+        _addPostController.selectedGenderValue.value = value.toString();
       },
       onSaved: (value) {
-        selectedGenderValue = value.toString();
+        _addPostController.selectedGenderValue.value = value.toString();
       },
       buttonStyleData: const ButtonStyleData(
         height: 30,
@@ -327,40 +285,5 @@ class _AddPostState extends State<AddPost> {
       style: const TextStyle(
           fontWeight: FontWeight.w500, color: Colors.black87, fontSize: 16),
     );
-  }
-
-  _imageUpdate() async {
-    try {
-      String storeImage = '';
-      var id = DateTime.now().microsecondsSinceEpoch.toString();
-      firebase_storage.Reference ref =
-          firebase_storage.FirebaseStorage.instance.ref('/filename/' "$id");
-      firebase_storage.UploadTask uploadTask =
-          ref.putFile(File(imagePath.isEmpty ? selectedImage : imagePath));
-      await Future.value(uploadTask);
-      storeImage = await ref.getDownloadURL();
-      setState(() {
-        loading = true;
-      });
-      String email = _emailController.text;
-      var strEmail = email.split("@");
-      databaseRef
-          .child(strEmail[0])
-          .update({
-            "userimage": storeImage,
-            "fullName": _nameController.text,
-            "email": _emailController.text,
-            "Mobile": _mobileController.text,
-            "address": _addressController.text,
-            "gender": selectedGenderValue,
-          })
-          .then((value) => Utils.toastMessage("update profile"))
-          .onError((error, stackTrace) => Utils.toastMessage(error.toString()));
-      setState(() {
-        loading = false;
-      });
-    } catch (e) {
-      print(e);
-    }
   }
 }

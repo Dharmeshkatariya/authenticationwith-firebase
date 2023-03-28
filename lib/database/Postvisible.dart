@@ -1,15 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class PostVisibleScreen extends StatefulWidget {
-  const PostVisibleScreen({Key? key}) : super(key: key);
+class PostVisibleScreen extends StatelessWidget {
+   PostVisibleScreen({Key? key}) : super(key: key);
 
-  @override
-  State<PostVisibleScreen> createState() => _PostVisibleScreenState();
-}
-
-class _PostVisibleScreenState extends State<PostVisibleScreen> {
   final fireStore = FirebaseFirestore.instance.collection("Users").snapshots();
+
   final fireStoreCollection = FirebaseFirestore.instance.collection("");
 
   @override
