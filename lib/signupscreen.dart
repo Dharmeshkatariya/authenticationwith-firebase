@@ -1,30 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:get/get.dart';
 import 'package:untitled5/common.dart';
-import 'package:untitled5/loginscreen.dart';
-import 'package:untitled5/utils/utills.dart';
+import 'package:untitled5/controller/signuopscreen_controller.dart';
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({Key? key}) : super(key: key);
+class SignUpScreen extends StatelessWidget {
+  SignUpScreen({Key? key}) : super(key: key);
 
-  @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
-}
-
-class _SignUpScreenState extends State<SignUpScreen> {
-  final _formSignUp = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _mobileController = TextEditingController();
-  final _passController = TextEditingController();
-  final _emailController = TextEditingController();
-  final databaseRef = FirebaseDatabase.instance.ref("User");
-  FirebaseAuth _auth = FirebaseAuth.instance;
-  FirebaseFirestore fireStore = FirebaseFirestore.instance;
-  bool isChecked = false;
-  bool loading = false;
+  final _signScreenController = Get.put(SignUpScreenController());
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +30,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       topRight: Radius.circular(50),
                     )),
                 child: Form(
-                  key: _formSignUp,
+                  key: _signScreenController.formSignUp,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -65,7 +47,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             Icons.person,
                             color: Colors.white,
                           ),
-                          controller: _nameController),
+                          controller: _signScreenController.nameController),
                       _textField(
                         text: "Email",
                         validator: (value) {
@@ -73,7 +55,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             return 'Email is required';
                           }
                         },
-                        controller: _emailController,
+                        controller: _signScreenController.emailController,
                         icon: const Icon(
                           Icons.email,
                           color: Colors.white,
@@ -86,7 +68,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             return 'Mobile  is required';
                           }
                         },
-                        controller: _mobileController,
+                        controller: _signScreenController.mobileController,
                         icon: const Icon(
                           Icons.call,
                           color: Colors.white,
@@ -103,7 +85,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             return 'Password  is required';
                           }
                         },
-                        controller: _passController,
+                        controller: _signScreenController.passController,
                         icon: const Icon(
                           Icons.lock,
                           color: Colors.white,
@@ -113,11 +95,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         children: [
                           Checkbox(
                               checkColor: Colors.white,
-                              value: isChecked,
+                              value: _signScreenController.isChecked.value,
                               onChanged: (bool? value) {
-                                setState(() {
-                                  isChecked = value!;
-                                });
+                                _signScreenController.isChecked.value = value!;
                               }),
                           const Text(
                             "yes agree all Terms & Condition",
@@ -129,12 +109,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ],
                       ),
                       Common.container(
-                          loading: loading,
+                          loading: _signScreenController.loading.value,
                           text: "Sign Up",
                           onTap: () {
-                            if (_formSignUp.currentState!.validate()) {
-                              _createUser();
-                              _databaseProfile();
+                            if (_signScreenController.formSignUp.currentState!
+                                .validate()) {
+                              _signScreenController.createUser();
+                              _signScreenController.databaseProfile();
                             }
                           }),
                     ],
@@ -165,51 +146,5 @@ class _SignUpScreenState extends State<SignUpScreen> {
       prefixIcon: icon,
       suffixIcon: suficon,
     );
-  }
-
-  _createUser() async {
-    try {
-      setState(() {
-        loading = true;
-      });
-      final credential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-            email: _emailController.text,
-            password: _passController.text,
-          )
-          .then((value) => Utils.toastMessage(value.toString()))
-          .onError((error, stackTrace) => Utils.toastMessage(error.toString()));
-      var shareP = await SharedPreferences.getInstance();
-      shareP.setString("email", _emailController.text);
-      shareP.setString("pass", _passController.text);
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-      } else if (e.code == 'email-already-in-use') {
-      }
-    } catch (e) {
-    }
-  }
-  _databaseProfile() {
-
-    if (_nameController.text.isNotEmpty &&
-        _emailController.text.isNotEmpty &&
-        _mobileController.text.isNotEmpty &&
-        _passController.text.isNotEmpty) {
-  
-
-
-      String email = _emailController.text;
-      var strEmail = email.split("@");
-      databaseRef.child(strEmail[0]).set({
-        "fullName": _nameController.text,
-        "email": _emailController.text,
-        "Mobile": _mobileController.text,
-        "password": _passController.text,
-      });
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const LoginScreen()),
-      );
-    }
   }
 }

@@ -21,7 +21,7 @@ class SignPage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const SignUpScreen()),
+                          builder: (context) =>  SignUpScreen()),
                     );
                   }),
               const SizedBox(
@@ -33,7 +33,7 @@ class SignPage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const MobileScreen()),
+                          builder: (context) =>  MobileScreen()),
                     );
                   }),
             ],

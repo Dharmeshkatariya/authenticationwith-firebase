@@ -1,33 +1,23 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_phone_auth_handler/firebase_phone_auth_handler.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:get/get.dart';
 import 'package:untitled5/common.dart';
-import 'package:untitled5/utils/utills.dart';
+import 'package:untitled5/controller/mobileverification_controller.dart';
 
-import 'otpscreen.dart';
+class MobileScreen extends StatelessWidget {
+  MobileScreen({Key? key}) : super(key: key);
 
-class MobileScreen extends StatefulWidget {
-  const MobileScreen({Key? key}) : super(key: key);
-
-  @override
-  State<MobileScreen> createState() => _MobileScreenState();
-}
-
-class _MobileScreenState extends State<MobileScreen> {
-  final _mobileController = TextEditingController();
-  final _form = GlobalKey<FormState>();
-  bool loading = false ;
+  final _mobileScreenController = Get.put(MobileScreenController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
+        body: Obx(
+      () => SafeArea(
         child: Container(
           color: Colors.deepPurple,
           child: Form(
-            key: _form,
+            key: _mobileScreenController.form,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -35,7 +25,7 @@ class _MobileScreenState extends State<MobileScreen> {
                   bordercolor: Colors.black,
                   color: Colors.white,
                   hintcolor: Colors.white,
-                  controller: _mobileController,
+                  controller: _mobileScreenController.mobileController,
                   fillColor: Colors.deepPurple,
                   text: "Phone",
                   prefixIcon: const Icon(
@@ -47,14 +37,13 @@ class _MobileScreenState extends State<MobileScreen> {
                   height: 20,
                 ),
                 Common.container(
-                  loading: loading,
+                    loading: _mobileScreenController.loading.value,
                     text: "Sign Up",
                     onTap: () {
-                      if (_form.currentState!.validate()) {
-                      setState(() {
-                        loading = true;
-                      });
-                        _mobileVerified();
+                      if (_mobileScreenController.form.currentState!
+                          .validate()) {
+                        _mobileScreenController.loading.value = true;
+                        _mobileScreenController.mobileVerified();
                       }
                     }),
               ],
@@ -62,42 +51,6 @@ class _MobileScreenState extends State<MobileScreen> {
           ),
         ),
       ),
-    );
-  }
-
-  _mobileVerified() async {
-  try{
-    FirebaseAuth auth = FirebaseAuth.instance;
-    auth.verifyPhoneNumber(
-      phoneNumber: "+91 ${_mobileController.text}",
-      verificationFailed: (FirebaseAuthException e) {
-      },
-      verificationCompleted: (PhoneAuthCredential credential) async {
-        // await auth
-        //     .signInWithCredential(credential)
-        //     .then((value) => print('Logged In Successfully'));
-      },
-
-      codeSent: (String verificationId, int? resendToken) async {
-
-        Common.verificationId = verificationId;
-        var receivedID = verificationId;
-        var shareP = await SharedPreferences.getInstance();
-        shareP.setString("receive", receivedID);
-        setState(() {
-          loading = false;
-        });
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) =>  OtpScreen()),
-        );
-      },
-      codeAutoRetrievalTimeout: (String verificationId) {
-      },
-    ).then((value) => Utils.toastMessage("Verifivation code send in message")).onError((error, stackTrace) =>
-        Utils.toastMessage(error.toString()));
-  }catch(e){
-    print(e);
-  }
+    ));
   }
 }
