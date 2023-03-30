@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class Common {
   static String verificationId = '';
 
-  static Widget container({
-    String? text,
-    GestureTapCallback? onTap,
-    bool loading = false
-  }) {
+  static Widget container(
+      {String? text, GestureTapCallback? onTap, bool loading = false}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -17,13 +15,42 @@ class Common {
           color: Colors.white,
           borderRadius: BorderRadius.circular(18),
         ),
-        child: loading ? const CircularProgressIndicator() :Text(
-          text!,
-          style: const TextStyle(
-              fontWeight: FontWeight.w600, color: Colors.blue, fontSize: 18),
-        ),
+        child: loading
+            ? const CircularProgressIndicator()
+            : Text(
+                text!,
+                style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: Colors.blue,
+                    fontSize: 18),
+              ),
       ),
     );
+  }
+
+  static Widget otpTextField({
+    List<TextInputFormatter>? inputFormatters,
+    required BuildContext context,
+    String? text,
+  }) {
+    return TextFormField(
+        onChanged: (value) {
+          if (value.length == 1) {
+            FocusScope.of(context).nextFocus();
+          }
+        },
+        textAlign: TextAlign.center,
+        keyboardType: TextInputType.number,
+        inputFormatters: [
+          LengthLimitingTextInputFormatter(1),
+          FilteringTextInputFormatter.digitsOnly
+        ],
+        decoration: InputDecoration(
+          hintText: text,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(13),
+          ),
+        ));
   }
 
   static Widget custumtextfield({
@@ -36,13 +63,12 @@ class Common {
     Color? color,
     Color? hintcolor,
     int? maxline,
-
     required Color bordercolor,
   }) {
     return TextFormField(
       controller: controller,
       validator: validator,
-maxLines: maxline,
+      maxLines: maxline,
       style: TextStyle(color: color),
       decoration: InputDecoration(
         hintText: text,
@@ -81,11 +107,15 @@ maxLines: maxline,
           color: color,
           borderRadius: BorderRadius.circular(18),
         ),
-        child: loading? const CircularProgressIndicator() : Text(
-          text!,
-          style: TextStyle(
-              fontWeight: FontWeight.w600, color: textcolor, fontSize: 18),
-        ),
+        child: loading
+            ? const CircularProgressIndicator()
+            : Text(
+                text!,
+                style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: textcolor,
+                    fontSize: 18),
+              ),
       ),
     );
   }

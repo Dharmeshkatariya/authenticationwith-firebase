@@ -23,10 +23,9 @@ class AddPostController extends GetxController {
   RxString genderValue = "".obs;
   RxString updateEmail = "".obs;
   final databaseRef = FirebaseDatabase.instance.ref("User");
-  firebase_storage.FirebaseStorage storage =
-      firebase_storage.FirebaseStorage.instance;
+  firebase_storage.FirebaseStorage storage = firebase_storage.FirebaseStorage.instance;
   RxBool loading = false.obs;
-  final form = GlobalKey<FormState>();
+
 
   @override
   void onInit() {
@@ -36,7 +35,6 @@ class AddPostController extends GetxController {
         _setValue(userEmail);
       }
     }
-
     super.onInit();
   }
 
@@ -76,10 +74,8 @@ class AddPostController extends GetxController {
       loading.value = true;
       String email = emailController.value.text;
       var strEmail = email.split("@");
-      databaseRef
-          .child(strEmail[0])
-          .update({
-            "userimage": storeImage,
+      databaseRef.child(strEmail[0]).update({
+        "userimage": storeImage,
             "fullName": nameController.value.text,
             "email": emailController.value.text,
             "Mobile": mobileController.value.text,

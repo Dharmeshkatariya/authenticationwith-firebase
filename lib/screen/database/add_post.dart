@@ -62,8 +62,9 @@ class AddPost extends GetView<AddPostController> {
   }
 
   Widget _column() {
+    final form = GlobalKey<FormState>();
     return Form(
-      key: controller.form,
+      key: form,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -180,7 +181,7 @@ class AddPost extends GetView<AddPostController> {
                 if (controller.imagePath.value.isEmpty &&
                     controller.selectedImage.value.isEmpty) {
                   Utils.toastMessage("select image");
-                } else if (controller.form.currentState!.validate()) {
+                } else if (form.currentState!.validate()) {
                   controller.loading.value = true;
                   controller.imageUpdate();
                 }

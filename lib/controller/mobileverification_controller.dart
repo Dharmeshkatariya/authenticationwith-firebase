@@ -10,7 +10,7 @@ import '../utils/utills.dart';
 class MobileScreenController extends GetxController {
   final mobileController = TextEditingController();
   RxBool loading = false.obs;
-  final form = GlobalKey<FormState>();
+
 
   mobileVerified() async {
     try {

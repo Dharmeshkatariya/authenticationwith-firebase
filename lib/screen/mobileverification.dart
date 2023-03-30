@@ -9,13 +9,14 @@ class MobileScreen extends GetView<MobileScreenController> {
 
   @override
   Widget build(BuildContext context) {
+    final form = GlobalKey<FormState>();
     return Scaffold(
         body: Obx(
       () => SafeArea(
         child: Container(
           color: Colors.deepPurple,
           child: Form(
-            key: controller.form,
+            key: form,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -38,7 +39,7 @@ class MobileScreen extends GetView<MobileScreenController> {
                     loading: controller.loading.value,
                     text: "Sign Up",
                     onTap: () {
-                      if (controller.form.currentState!.validate()) {
+                      if (form.currentState!.validate()) {
                         controller.loading.value = true;
                         controller.mobileVerified();
                       }
