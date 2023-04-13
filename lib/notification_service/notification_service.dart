@@ -89,4 +89,5 @@ class NotificationService {
     final String? payload = notificationResponse.payload;
     if (notificationResponse.payload != null) {}
   }
+
 }

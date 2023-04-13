@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import '../utils/utills.dart';
 
 class AddPostController extends GetxController {
+
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final mobileController = TextEditingController();
@@ -89,4 +90,16 @@ class AddPostController extends GetxController {
       print(e);
     }
   }
+
+
+  @override
+  void onClose() {
+    nameController.dispose();
+    mobileController.dispose();
+    addressController.dispose();
+    emailController.dispose();
+    // TODO: implement onClose
+    super.onClose();
+  }
+  
 }
